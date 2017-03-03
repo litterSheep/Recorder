@@ -6,6 +6,7 @@
 
     <color name="gray">#f0f0f0</color>
     <color name="mainColor">#00B1ED</color>
+    <color name="mainBg">#dd00B1ED</color>
     <color name="main_color_press">#4373e3</color>
     <color name="white">#FFFFFF</color>
     <color name="green">#02c874</color>

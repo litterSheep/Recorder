@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 greendao {
-    schemaVersion 8
+    schemaVersion 12
     daoPackage 'com.ly.recorder.db.greendao'
     targetGenDir 'src/main/java'
 }
@@ -26,10 +26,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.1.1'
-
     compile 'org.greenrobot:greendao-generator:3.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile project(':customtitlebar')
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 
 }
