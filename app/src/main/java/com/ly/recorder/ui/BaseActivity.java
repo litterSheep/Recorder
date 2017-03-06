@@ -1,6 +1,7 @@
 package com.ly.recorder.ui;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.ly.customtitlebar.CustomTitleBar;
 import com.ly.recorder.R;
@@ -84,5 +86,16 @@ public class BaseActivity extends AppCompatActivity {
 
     public void startMyActivity(Class<?> cla) {
         this.startActivity(new Intent(this, cla));
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideSoftKeyboard() {
+        //如果打开了软键盘，则隐藏
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

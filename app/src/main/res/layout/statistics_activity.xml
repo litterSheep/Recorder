@@ -5,7 +5,6 @@
     android:background="@color/gray"
     android:orientation="vertical">
 
-
     <com.ly.customtitlebar.CustomTitleBar
         android:id="@+id/top_title"
         android:layout_width="match_parent"
@@ -17,4 +16,57 @@
         android:layout_width="match_parent"
         android:layout_height="230dp" />
 
+
+    <RadioGroup
+        android:id="@+id/rbt_container"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/rbt_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rbt_selector"
+            android:padding="5dp"
+            android:text="日"
+            android:textColor="@drawable/text_blue"
+            android:gravity="center"
+            android:button="@null" />
+
+        <RadioButton
+            android:id="@+id/rbt_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rbt_selector"
+            android:padding="5dp"
+            android:text="月"
+            android:checked="true"
+            android:gravity="center"
+            android:textColor="@drawable/text_blue"
+            android:button="@null" />
+
+        <RadioButton
+            android:id="@+id/rbt_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rbt_selector"
+            android:padding="5dp"
+            android:text="年"
+            android:gravity="center"
+            android:textColor="@drawable/text_blue"
+            android:button="@null" />
+
+    </RadioGroup>
+
+    <FrameLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomBar" />
 </LinearLayout>

@@ -21,11 +21,6 @@
 
         <activity android:name=".ui.StatisticsActivity" />
 
-        <activity
-            android:name=".ui.RecordActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
-
     </application>
 
 </manifest>

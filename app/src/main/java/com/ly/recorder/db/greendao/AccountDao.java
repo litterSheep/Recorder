@@ -28,13 +28,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
         public final static Property Year = new Property(1, Integer.class, "year", false, "YEAR");
         public final static Property Month = new Property(2, Integer.class, "month", false, "MONTH");
         public final static Property Date = new Property(3, Integer.class, "date", false, "DATE");
-        public final static Property Breakfast = new Property(4, Float.class, "breakfast", false, "BREAKFAST");
-        public final static Property Lunch = new Property(5, Float.class, "lunch", false, "LUNCH");
-        public final static Property Dinner = new Property(6, Float.class, "dinner", false, "DINNER");
-        public final static Property Other = new Property(7, Float.class, "other", false, "OTHER");
-        public final static Property Total = new Property(8, Float.class, "total", false, "TOTAL");
-        public final static Property Remark = new Property(9, String.class, "remark", false, "REMARK");
-        public final static Property Time = new Property(10, Long.class, "time", false, "TIME");
+        public final static Property Time = new Property(4, Long.class, "time", false, "TIME");
+        public final static Property Money = new Property(5, Float.class, "money", false, "MONEY");
+        public final static Property Remark = new Property(6, String.class, "remark", false, "REMARK");
     }
 
 
@@ -54,13 +50,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 "\"YEAR\" INTEGER," + // 1: year
                 "\"MONTH\" INTEGER," + // 2: month
                 "\"DATE\" INTEGER," + // 3: date
-                "\"BREAKFAST\" REAL," + // 4: breakfast
-                "\"LUNCH\" REAL," + // 5: lunch
-                "\"DINNER\" REAL," + // 6: dinner
-                "\"OTHER\" REAL," + // 7: other
-                "\"TOTAL\" REAL NOT NULL ," + // 8: total
-                "\"REMARK\" TEXT," + // 9: remark
-                "\"TIME\" INTEGER);"); // 10: time
+                "\"TIME\" INTEGER," + // 4: time
+                "\"MONEY\" REAL," + // 5: money
+                "\"REMARK\" TEXT);"); // 6: remark
     }
 
     /** Drops the underlying database table. */
@@ -93,35 +85,19 @@ public class AccountDao extends AbstractDao<Account, Long> {
             stmt.bindLong(4, date);
         }
 
-        Float breakfast = entity.getBreakfast();
-        if (breakfast != null) {
-            stmt.bindDouble(5, breakfast);
+        Long time = entity.getTime();
+        if (time != null) {
+            stmt.bindLong(5, time);
         }
 
-        Float lunch = entity.getLunch();
-        if (lunch != null) {
-            stmt.bindDouble(6, lunch);
+        Float money = entity.getMoney();
+        if (money != null) {
+            stmt.bindDouble(6, money);
         }
-
-        Float dinner = entity.getDinner();
-        if (dinner != null) {
-            stmt.bindDouble(7, dinner);
-        }
-
-        Float other = entity.getOther();
-        if (other != null) {
-            stmt.bindDouble(8, other);
-        }
-        stmt.bindDouble(9, entity.getTotal());
  
         String remark = entity.getRemark();
         if (remark != null) {
-            stmt.bindString(10, remark);
-        }
-
-        Long time = entity.getTime();
-        if (time != null) {
-            stmt.bindLong(11, time);
+            stmt.bindString(7, remark);
         }
     }
 
@@ -149,35 +125,19 @@ public class AccountDao extends AbstractDao<Account, Long> {
             stmt.bindLong(4, date);
         }
 
-        Float breakfast = entity.getBreakfast();
-        if (breakfast != null) {
-            stmt.bindDouble(5, breakfast);
+        Long time = entity.getTime();
+        if (time != null) {
+            stmt.bindLong(5, time);
         }
 
-        Float lunch = entity.getLunch();
-        if (lunch != null) {
-            stmt.bindDouble(6, lunch);
+        Float money = entity.getMoney();
+        if (money != null) {
+            stmt.bindDouble(6, money);
         }
-
-        Float dinner = entity.getDinner();
-        if (dinner != null) {
-            stmt.bindDouble(7, dinner);
-        }
-
-        Float other = entity.getOther();
-        if (other != null) {
-            stmt.bindDouble(8, other);
-        }
-        stmt.bindDouble(9, entity.getTotal());
  
         String remark = entity.getRemark();
         if (remark != null) {
-            stmt.bindString(10, remark);
-        }
-
-        Long time = entity.getTime();
-        if (time != null) {
-            stmt.bindLong(11, time);
+            stmt.bindString(7, remark);
         }
     }
 
@@ -193,13 +153,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // year
                 cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // month
                 cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // date
-                cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4), // breakfast
-                cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5), // lunch
-                cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6), // dinner
-                cursor.isNull(offset + 7) ? null : cursor.getFloat(offset + 7), // other
-                cursor.getFloat(offset + 8), // total
-                cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // remark
-                cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10) // time
+                cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // time
+                cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5), // money
+                cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // remark
         );
         return entity;
     }
@@ -210,13 +166,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
         entity.setYear(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
         entity.setMonth(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setDate(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setBreakfast(cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4));
-        entity.setLunch(cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5));
-        entity.setDinner(cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6));
-        entity.setOther(cursor.isNull(offset + 7) ? null : cursor.getFloat(offset + 7));
-        entity.setTotal(cursor.getFloat(offset + 8));
-        entity.setRemark(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setTime(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setMoney(cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5));
+        entity.setRemark(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override

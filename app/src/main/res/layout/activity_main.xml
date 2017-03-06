@@ -4,23 +4,77 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBg"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context="com.ly.recorder.ui.MainActivity">
+    android:background="@color/gray"
+    tools:context="com.ly.recorder.ui.MainActivity"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_record"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="@string/title_record"
-        android:padding="10dp" />
+    <com.ly.customtitlebar.CustomTitleBar
+        android:id="@+id/top_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_statistics"
-        android:layout_width="120dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_statistics"
-        android:padding="10dp" />
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_num"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:inputType="numberDecimal"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:minHeight="100dp"
+        android:hint="@string/record_remark"
+        android:textSize="16sp"
+        android:gravity="top"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/transparent"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/tv_commit"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:text="@string/record_commit"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:padding="15dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_register" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="-- 历史入账 --"
+        android:gravity="center" />
+
+    <ListView
+        android:id="@+id/lv_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:listSelector="@color/transparent" />
 
 </LinearLayout>

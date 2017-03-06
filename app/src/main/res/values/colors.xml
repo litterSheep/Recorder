@@ -17,6 +17,7 @@
     <color name="gray_line">#dddddd</color>
     <color name="black_text">#373737</color>
     <color name="gray_text">#888888</color>
+    <color name="half_gray">#88888888</color>
 
     <color name="dialog_bg">#90f0f0f0</color>
 
