@@ -10,17 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp" />
-
-
     <RadioGroup
         android:id="@+id/rbt_container"
         android:layout_width="150dp"
         android:layout_height="40dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
         android:gravity="center">
@@ -68,5 +62,5 @@
         android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottomBar" />
+        android:layout_marginTop="10dp" />
 </LinearLayout>

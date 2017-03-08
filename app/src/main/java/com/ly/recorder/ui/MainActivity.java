@@ -1,6 +1,7 @@
 package com.ly.recorder.ui;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -8,37 +9,40 @@ import android.widget.TextView;
 
 import com.ly.customtitlebar.CustomTitleBar;
 import com.ly.recorder.App;
+import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.adapter.HistoryAdapter;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.ToastUtil;
+import com.ly.recorder.view.ListPopupWindow;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText et_money, et_remark;
-    private TextView tv_save;
+    private TextView tv_save, tv_record_type;
     private ListView lv_history;
     private HistoryAdapter adapter;
     private List<Account> mlist;
     private AccountManager accountManager;
-
+    private ListPopupWindow listPopupWindow;
+    private int type = Constants.TYPES.length - 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initViews();
         setAdapter();
     }
 
     private void initViews() {
         topTitleBar.setTitle_text(getString(R.string.title_record));
+        topTitleBar.setRight_button_text("统计");
         topTitleBar.setOnRightClickLitener(new CustomTitleBar.OnRightClickLitener() {
             @Override
             public void onRightClick() {
@@ -56,13 +60,9 @@ public class MainActivity extends BaseActivity {
         et_money = (EditText) findViewById(R.id.et_money);
         et_remark = (EditText) findViewById(R.id.et_remark);
         tv_save = (TextView) findViewById(R.id.tv_commit);
-        tv_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard();
-                save();
-            }
-        });
+        tv_record_type = (TextView) findViewById(R.id.tv_record_type);
+        tv_save.setOnClickListener(this);
+        tv_record_type.setOnClickListener(this);
     }
 
     private void setAdapter() {
@@ -92,6 +92,7 @@ public class MainActivity extends BaseActivity {
             account.setMonth(month);
             account.setDate(date);
             account.setTime(System.currentTimeMillis());
+            account.setType(type);
 
             long rawId = App.getInstance().getDaoSession().getAccountDao().insertOrReplace(account);
             if (rawId > 0) {
@@ -105,5 +106,40 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
             ToastUtil.showToast(this, getString(R.string.empty_hint));
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_commit:
+                hideSoftKeyboard();
+                save();
+                break;
+            case R.id.tv_record_type:
+
+                showTypePopup(v);
+                break;
+            default:
+
+                break;
+        }
+    }
+
+    private void showTypePopup(View view) {
+        if (listPopupWindow == null) {
+            List<String> list = new ArrayList<>();
+            for (String s : Constants.TYPES) {
+                list.add(s);
+            }
+            listPopupWindow = new ListPopupWindow(this, list, new ListPopupWindow.OnPopuItemClickListener() {
+                @Override
+                public void OnItemClick(int position) {
+                    type = position;
+                    tv_record_type.setText(Constants.TYPES[position]);
+                }
+            });
+        }
+        //listPopupWindow.showAsDropDown(view);
+        listPopupWindow.showAsDropDown(view, 50, Gravity.LEFT);
     }
 }

@@ -31,6 +31,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         public final static Property Time = new Property(4, Long.class, "time", false, "TIME");
         public final static Property Money = new Property(5, Float.class, "money", false, "MONEY");
         public final static Property Remark = new Property(6, String.class, "remark", false, "REMARK");
+        public final static Property Type = new Property(7, Integer.class, "type", false, "TYPE");
     }
 
 
@@ -52,7 +53,8 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 "\"DATE\" INTEGER," + // 3: date
                 "\"TIME\" INTEGER," + // 4: time
                 "\"MONEY\" REAL," + // 5: money
-                "\"REMARK\" TEXT);"); // 6: remark
+                "\"REMARK\" TEXT," + // 6: remark
+                "\"TYPE\" INTEGER);"); // 7: type
     }
 
     /** Drops the underlying database table. */
@@ -99,6 +101,11 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (remark != null) {
             stmt.bindString(7, remark);
         }
+
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(8, type);
+        }
     }
 
     @Override
@@ -139,6 +146,11 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (remark != null) {
             stmt.bindString(7, remark);
         }
+
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(8, type);
+        }
     }
 
     @Override
@@ -155,7 +167,8 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // date
                 cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // time
                 cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5), // money
-                cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // remark
+                cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // remark
+                cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7) // type
         );
         return entity;
     }
@@ -169,6 +182,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         entity.setTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setMoney(cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5));
         entity.setRemark(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setType(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
      }
     
     @Override

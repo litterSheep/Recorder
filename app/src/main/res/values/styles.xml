@@ -9,4 +9,16 @@
         <item name="android:textColorHint">@color/gray_text</item>
     </style>
 
+    <style name="pop_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
+    </style>
+
+    <!-- 通用分隔线样式 -->
+    <style name="gray_line">
+        <item name="android:layout_height">1dip</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/gray_line</item>
+    </style>
+
 </resources>

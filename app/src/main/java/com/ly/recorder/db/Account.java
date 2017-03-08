@@ -18,10 +18,11 @@ public class Account {
     private Long time;
     private Float money;
     private String remark;
+    private Integer type;
 
-    @Generated(hash = 1006755246)
+    @Generated(hash = 1959441386)
     public Account(Long id, Integer year, Integer month, Integer date, Long time,
-                   Float money, String remark) {
+                   Float money, String remark, Integer type) {
         this.id = id;
         this.year = year;
         this.month = month;
@@ -29,6 +30,7 @@ public class Account {
         this.time = time;
         this.money = money;
         this.remark = remark;
+        this.type = type;
     }
     @Generated(hash = 882125521)
     public Account() {
@@ -57,19 +59,15 @@ public class Account {
     public void setDate(Integer date) {
         this.date = date;
     }
-
     public Long getTime() {
         return this.time;
     }
-
     public void setTime(Long time) {
         this.time = time;
     }
-
     public Float getMoney() {
         return this.money;
     }
-
     public void setMoney(Float money) {
         this.money = money;
     }
@@ -78,6 +76,14 @@ public class Account {
     }
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Integer getType() {
+        return this.type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
 

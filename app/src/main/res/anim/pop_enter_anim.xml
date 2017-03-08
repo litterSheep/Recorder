@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 更多的popupwindow的弹出动画,显示 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <alpha
+        android:duration="200"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+
+    <translate
+        android:duration="200"
+        android:fromYDelta="-8%p"
+        android:toYDelta="0" />
+
+    <!-- 透明动画
+        android:duration="200" 动画持续时间
+        android:fromAlpha="0.0" 开始时透明度
+        android:toAlpha="1.0" 结束时透明度
+    -->
+
+    <scale
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:fromXScale="1.0"
+        android:toXScale="1.0"
+        android:fromYScale="0.0"
+        android:toYScale="1.0"
+        android:pivotX="0%"
+        android:pivotY="0%"
+        android:duration="200" />
+</set>

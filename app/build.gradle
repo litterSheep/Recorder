@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 greendao {
-    schemaVersion 12
+    schemaVersion 14
     daoPackage 'com.ly.recorder.db.greendao'
     targetGenDir 'src/main/java'
 }
