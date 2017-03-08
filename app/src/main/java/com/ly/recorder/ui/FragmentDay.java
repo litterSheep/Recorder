@@ -124,6 +124,7 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
                 money = types.get(type) + money;
             }
             types.put(type, money);
+
         }
 
 
