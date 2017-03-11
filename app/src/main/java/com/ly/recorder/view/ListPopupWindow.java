@@ -20,9 +20,9 @@ public class ListPopupWindow extends PopupWindow {
     private ListPopupWindowAdapter mListPopupWindowAdapter;
     private Activity mContext;
     private List<String> mStringList;
-    private OnPopuItemClickListener myOnItemClickListener;
+    private OnPopupItemClickListener myOnItemClickListener;
 
-    public ListPopupWindow(Activity context, List<String> list, OnPopuItemClickListener listener) {
+    public ListPopupWindow(Activity context, List<String> list, OnPopupItemClickListener listener) {
         super(context);
         this.myOnItemClickListener = listener;
         this.mContext = context;
@@ -54,7 +54,7 @@ public class ListPopupWindow extends PopupWindow {
         this.setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(R.color.transparent)));
     }
 
-    public void setOnItemClickListener(OnPopuItemClickListener listener) {
+    public void setOnItemClickListener(OnPopupItemClickListener listener) {
         this.myOnItemClickListener = listener;
     }
 
@@ -67,7 +67,7 @@ public class ListPopupWindow extends PopupWindow {
         }
     }
 
-    public interface OnPopuItemClickListener {
+    public interface OnPopupItemClickListener {
         void OnItemClick(int position);
     }
 

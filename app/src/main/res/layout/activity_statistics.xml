@@ -5,7 +5,7 @@
     android:background="@color/gray"
     android:orientation="vertical">
 
-    <com.ly.customtitlebar.CustomTitleBar
+    <com.ly.recorder.view.CustomTitleBar
         android:id="@+id/top_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -14,10 +14,10 @@
         android:id="@+id/rbt_container"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rbt_day"
@@ -25,11 +25,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/rbt_selector"
+            android:button="@null"
+            android:gravity="center"
             android:padding="5dp"
             android:text="日"
-            android:textColor="@drawable/text_blue"
-            android:gravity="center"
-            android:button="@null" />
+            android:textColor="@drawable/text_blue" />
 
         <RadioButton
             android:id="@+id/rbt_month"
@@ -37,12 +37,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/rbt_selector"
-            android:padding="5dp"
-            android:text="月"
+            android:button="@null"
             android:checked="true"
             android:gravity="center"
-            android:textColor="@drawable/text_blue"
-            android:button="@null" />
+            android:padding="5dp"
+            android:text="月"
+            android:textColor="@drawable/text_blue" />
 
         <RadioButton
             android:id="@+id/rbt_year"
@@ -50,17 +50,25 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/rbt_selector"
+            android:button="@null"
+            android:gravity="center"
             android:padding="5dp"
             android:text="年"
-            android:gravity="center"
-            android:textColor="@drawable/text_blue"
-            android:button="@null" />
+            android:textColor="@drawable/text_blue" />
 
     </RadioGroup>
 
-    <FrameLayout
-        android:id="@+id/contentContainer"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:overScrollMode="never">
+
+        <FrameLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"></FrameLayout>
+    </ScrollView>
 </LinearLayout>

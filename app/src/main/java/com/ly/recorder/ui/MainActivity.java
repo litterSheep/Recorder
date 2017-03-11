@@ -7,14 +7,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ly.customtitlebar.CustomTitleBar;
-import com.ly.recorder.App;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.adapter.HistoryAdapter;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.ToastUtil;
+import com.ly.recorder.view.CustomTitleBar;
 import com.ly.recorder.view.ListPopupWindow;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initViews() {
         topTitleBar.setTitle_text(getString(R.string.title_record));
         topTitleBar.setRight_button_text("统计");
-        topTitleBar.setOnRightClickLitener(new CustomTitleBar.OnRightClickLitener() {
+        topTitleBar.setOnRightClickListener(new CustomTitleBar.OnRightClickListener() {
             @Override
             public void onRightClick() {
                 startMyActivity(StatisticsActivity.class);
@@ -94,7 +93,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             account.setTime(System.currentTimeMillis());
             account.setType(type);
 
-            long rawId = App.getInstance().getDaoSession().getAccountDao().insertOrReplace(account);
+            long rawId = new AccountManager().insert(account);
             if (rawId > 0) {
                 ToastUtil.showToast(this, getString(R.string.save_success));
                 adapter.add(account);
@@ -131,7 +130,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             for (String s : Constants.TYPES) {
                 list.add(s);
             }
-            listPopupWindow = new ListPopupWindow(this, list, new ListPopupWindow.OnPopuItemClickListener() {
+            listPopupWindow = new ListPopupWindow(this, list, new ListPopupWindow.OnPopupItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
                     type = position;
@@ -140,6 +139,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             });
         }
         //listPopupWindow.showAsDropDown(view);
-        listPopupWindow.showAsDropDown(view, 50, Gravity.LEFT);
+        listPopupWindow.showAsDropDown(view, 0, Gravity.CENTER);
     }
 }

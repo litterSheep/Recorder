@@ -13,8 +13,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.ly.customtitlebar.CustomTitleBar;
 import com.ly.recorder.R;
+import com.ly.recorder.view.CustomTitleBar;
 
 /**
  * Created by ly on 2017/3/3 9:36.

@@ -1,7 +1,6 @@
-package com.ly.customtitlebar;
+package com.ly.recorder.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -9,7 +8,10 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.ly.recorder.R;
 
 /**
  * Android自定义标题栏
@@ -28,7 +30,7 @@ public class CustomTitleBar extends LinearLayout {
     /**
      * 标题栏的根布局
      */
-    private LinearLayout ll;
+    private RelativeLayout root_rl;
     /**
      * 标题栏的左边按返回按钮
      */
@@ -80,7 +82,6 @@ public class CustomTitleBar extends LinearLayout {
      */
     private boolean show_left_button;
 
-
     /**
      * 右边保存按钮的资源图片
      */
@@ -103,37 +104,33 @@ public class CustomTitleBar extends LinearLayout {
     private boolean show_right_button;
 
     private OnLeftClickListener onLeftClickListener;
-    private OnRightClickLitener onRightClickLitener;
+    private OnRightClickListener onRightClickListener;
+    private OnTitleClickListener onTitleClickListener;
 
     public CustomTitleBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         /**加载布局文件*/
         LayoutInflater.from(context).inflate(R.layout.pub_titlebar, this, true);
-        ll = (LinearLayout) findViewById(R.id.ll);
+        root_rl = (RelativeLayout) findViewById(R.id.rl_top_title);
         left_button = (TextView) findViewById(R.id.left_button);
         right_button = (TextView) findViewById(R.id.right_button);
         title = (TextView) findViewById(R.id.title);
 
-        /**获取属性值*/
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomTitleBar);
         /**标题相关*/
-        title_background_color = typedArray.getColor(R.styleable.CustomTitleBar_top_title_background, 0xff00B1ED);
-        title_text = typedArray.getString(R.styleable.CustomTitleBar_title_text);
-        title_textColor = typedArray.getColor(R.styleable.CustomTitleBar_title_textColor, Color.WHITE);
-        title_textSize = typedArray.getColor(R.styleable.CustomTitleBar_title_textSize, 18);
+        title_background_color = 0xff00B1ED;
+        title_textColor = Color.WHITE;
+        title_textSize = 18;
         /**返回按钮相关*/
-        left_button_imageId = typedArray.getResourceId(R.styleable.CustomTitleBar_left_button_image, R.drawable.left);
-        left_button_text = typedArray.getString(R.styleable.CustomTitleBar_left_button_text);
-        left_button_textColor = typedArray.getColor(R.styleable.CustomTitleBar_left_button_textColor, Color.WHITE);
-        left_button_textSize = typedArray.getColor(R.styleable.CustomTitleBar_left_button_textSize, 20);
-        show_left_button = typedArray.getBoolean(R.styleable.CustomTitleBar_show_left_button, true);
+        left_button_imageId = R.mipmap.left;
+        left_button_textColor = Color.WHITE;
+        left_button_textSize = 20;
+        show_left_button = true;
         /**右边保存按钮相关*/
-        right_button_imageId = typedArray.getResourceId(R.styleable.CustomTitleBar_right_button_image, 0);
-        right_button_text = typedArray.getString(R.styleable.CustomTitleBar_right_button_text);
-        right_button_textColor = typedArray.getColor(R.styleable.CustomTitleBar_right_button_textColor, Color.WHITE);
-        right_button_textSize = typedArray.getColor(R.styleable.CustomTitleBar_right_button_textSize, 22);
-        show_right_button = typedArray.getBoolean(R.styleable.CustomTitleBar_show_right_button, true);
-        /**设置值*/
+        right_button_textColor = Color.WHITE;
+        right_button_textSize = 22;
+        show_right_button = true;
+
+        right_button.setSingleLine(true);
 
         setTitle_background_color(title_background_color);
         setTitle_text(title_text);
@@ -141,6 +138,7 @@ public class CustomTitleBar extends LinearLayout {
         setTitle_textColor(title_textColor);
         setShow_left_button(show_left_button);
         setShow_right_button(show_right_button);
+
         if (!TextUtils.isEmpty(left_button_text)) {//返回按钮显示为文字
             setLeft_button_text(left_button_text);
             setLeft_button_textColor(left_button_textColor);
@@ -167,14 +165,21 @@ public class CustomTitleBar extends LinearLayout {
         right_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onRightClickLitener != null) {
-                    onRightClickLitener.onRightClick();
+                if (onRightClickListener != null) {
+                    onRightClickListener.onRightClick();
                 }
             }
         });
 
+        title.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onTitleClickListener != null)
+                    onTitleClickListener.onTitleClick();
+            }
+        });
         //腾出状态栏高度
-        ll.setPadding(0, getStatusBarHeight(getContext()), 0, 0);
+        root_rl.setPadding(0, getStatusBarHeight(getContext()), 0, 0);
 
     }
 
@@ -201,10 +206,10 @@ public class CustomTitleBar extends LinearLayout {
     /**
      * 获取标题栏的跟布局
      *
-     * @return LinearLayout
+     * @return RelativeLayout
      */
-    public LinearLayout getLl() {
-        return ll;
+    public RelativeLayout getRoot_rl() {
+        return root_rl;
     }
 
     /**
@@ -342,7 +347,7 @@ public class CustomTitleBar extends LinearLayout {
      * @param title_background_color
      */
     public void setTitle_background_color(int title_background_color) {
-        ll.setBackgroundColor(title_background_color);
+        root_rl.setBackgroundColor(title_background_color);
     }
 
     /**
@@ -376,15 +381,23 @@ public class CustomTitleBar extends LinearLayout {
         void onLeftClick();
     }
 
-    public interface OnRightClickLitener {
+    public interface OnRightClickListener {
         void onRightClick();
+    }
+
+    public interface OnTitleClickListener {
+        void onTitleClick();
     }
 
     public void setOnLeftClickListener(OnLeftClickListener onLeftClickListener) {
         this.onLeftClickListener = onLeftClickListener;
     }
 
-    public void setOnRightClickLitener(OnRightClickLitener onRightClickLitener) {
-        this.onRightClickLitener = onRightClickLitener;
+    public void setOnRightClickListener(OnRightClickListener onRightClickListener) {
+        this.onRightClickListener = onRightClickListener;
+    }
+
+    public void setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
+        this.onTitleClickListener = onTitleClickListener;
     }
 }

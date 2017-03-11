@@ -10,6 +10,7 @@
         android:id="@+id/lv_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scrollbarStyle="outsideOverlay"
         android:divider="@null"></ListView>
 
 </LinearLayout>

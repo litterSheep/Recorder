@@ -21,7 +21,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
-import com.ly.recorder.db.AccountManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import java.util.Map;
 
 public class FragmentDay extends Fragment implements OnChartValueSelectedListener {
     private PieChart mChart;
+    private List<Account> accounts;
 
     public FragmentDay() {
     }
@@ -48,7 +48,7 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_day, container, false);
         initChart(view);
-
+        setData(accounts);
         return view;
     }
 
@@ -56,62 +56,41 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
         mChart = (PieChart) view.findViewById(R.id.chart_day);
         mChart.setUsePercentValues(true);
         mChart.getDescription().setEnabled(false);
-        mChart.setExtraOffsets(5, 10, 5, 5);
+        //饼图与文字描述的padding
+        mChart.setExtraOffsets(5, 10, 25, 5);
 
         mChart.setDragDecelerationFrictionCoef(0.95f);
-
-        //mChart.setCenterTextTypeface(mTfLight);
-        mChart.setCenterText(getString(R.string.app_name));
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColor(Color.WHITE);
 
         mChart.setTransparentCircleColor(Color.WHITE);
-        mChart.setTransparentCircleAlpha(110);
+        mChart.setTransparentCircleAlpha(55);//中央圆孔背景透明度
 
-        mChart.setHoleRadius(58f);
-        mChart.setTransparentCircleRadius(61f);
+        mChart.setHoleRadius(20f);//中央圆孔的大小
+        mChart.setTransparentCircleRadius(20f);//中央圆孔透明圈大小
 
-        mChart.setDrawCenterText(true);
+        mChart.setDrawCenterText(false);//中间的文字
+        //mChart.setCenterTextTypeface(mTfLight);
+        //mChart.setCenterText(getString(R.string.app_name));
 
         mChart.setRotationAngle(0);
         // enable rotation of the chart by touch
         mChart.setRotationEnabled(true);
         mChart.setHighlightPerTapEnabled(true);
 
-//        mChart.setUnit(" €");
-//         mChart.setDrawUnitsInChart(true);
-
         // add a selection listener
         mChart.setOnChartValueSelectedListener(this);
-
-        setData();
-
-        mChart.animateY(1200, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
-
-        // entry label styling
-        mChart.setEntryLabelColor(Color.WHITE);
-        //mChart.setEntryLabelTypeface(mTfRegular);
-        mChart.setEntryLabelTextSize(12f);
     }
 
-    private void setData() {
-        ArrayList<PieEntry> entries = new ArrayList<>();
+    public void setData(List<Account> list) {
+        accounts = list;
+        if (mChart == null || accounts == null)
+            return;
 
-        AccountManager accountManager = new AccountManager();
-        List<Account> accounts = accountManager.queryForDay();
+        ArrayList<PieEntry> entries = new ArrayList<>();
         float total = 0;
-        //key:type  value:该类型对应的总价
+        //key:type  value:该类型对应的总花费
         Map<Integer, Float> types = new HashMap<>();
         for (Account account : accounts) {
             Float money = account.getMoney();
@@ -121,59 +100,104 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
             if (type == null)
                 type = Constants.TYPES.length - 1;//设置为默认值
             if (types.containsKey(type)) {
-                money = types.get(type) + money;
+                money += types.get(type);
             }
             types.put(type, money);
-
         }
-
 
         for (Integer type : types.keySet()) {
-            entries.add(new PieEntry(types.get(type), Constants.TYPES[type]));
+            float money = types.get(type);
+            entries.add(new PieEntry(money, Constants.TYPES[type] + money + "元"));
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "今日花费" + total + "元");
+        if (entries.size() > 0) {
 
-        //dataSet.setDrawIcons(false);
-        //dataSet.setIconsOffset(new MPPointF(0, 40));
+            PieDataSet dataSet;
+            PieData pieData = mChart.getData();
 
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
+            if (pieData != null && pieData.getDataSetCount() > 0) {
 
-        // add a lot of colors
+                dataSet = (PieDataSet) pieData.getDataSet();
+                dataSet.setValues(entries);
 
-        ArrayList<Integer> colors = new ArrayList<>();
+                pieData.notifyDataChanged();
+                mChart.notifyDataSetChanged();
+            } else {
+                dataSet = new PieDataSet(entries, "共花费" + total + "元");
 
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
+                //dataSet.setDrawIcons(false);
+                //dataSet.setIconsOffset(new MPPointF(0, 40));
 
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
+                dataSet.setSliceSpace(2f);//扇形之间的间隙
+                dataSet.setSelectionShift(6f);//点击扇形后多出的部分
 
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
+                // add a lot of colors
 
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
+                ArrayList<Integer> colors = new ArrayList<>();
 
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
 
-        colors.add(ColorTemplate.getHoloBlue());
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
 
-        dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
 
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        //data.setValueTypeface(mTfLight);
-        // undo all highlights
+                for (int c : ColorTemplate.LIBERTY_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+
+                colors.add(ColorTemplate.getHoloBlue());
+
+                dataSet.setColors(colors);
+                //dataSet.setSelectionShift(0f);
+
+                PieData data = new PieData(dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(16f);
+                data.setValueTextColor(Color.WHITE);
+                //data.setValueTypeface(mTfLight);
+                // undo all highlights
+                mChart.setData(data);
+            }
+        } else {
+            mChart.clear();
+        }
         mChart.highlightValues(null);
+        //mChart.invalidate();
 
-        mChart.setData(data);
-        mChart.invalidate();
+        mChart.setNoDataText(getString(R.string.show_no_data));
+        mChart.setNoDataTextColor(getResources().getColor(R.color.gray_text));
+
+        mChart.animateY(1200, Easing.EasingOption.EaseInOutQuad);
+        // mChart.spin(2000, 0, 360);
+
+        Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(20f);
+        l.setYEntrySpace(20f);
+        l.setYOffset(0f);
+
+        // entry label styling
+        //在扇形区内隐藏每个类别的描述
+        mChart.setDrawEntryLabels(false);
+        mChart.setEntryLabelColor(Color.GRAY);
+        //mChart.setEntryLabelTypeface(mTfRegular);
+        mChart.setEntryLabelTextSize(12f);
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void initData(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override

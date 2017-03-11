@@ -9,6 +9,7 @@ import com.ly.recorder.utils.logger.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @SuppressLint("SimpleDateFormat")
@@ -258,5 +259,23 @@ public class TimeUtil {
         SimpleDateFormat f = new SimpleDateFormat(fromat);
 
         return f.format(d);
+    }
+
+    /**
+     * 获取某月最后一天
+     * Created by ly on 2017/3/11 9:55
+     */
+    public static int getLastDayOfMonth(int year, int month) {
+        if (year < 1970 || month > 12 || month < 1) {
+            Logger.w("getLastDayOfMonth 月份格式不对...");
+            return 30;
+        }
+        Calendar cal = Calendar.getInstance();
+        //设置年份
+        cal.set(Calendar.YEAR, year);
+        //设置月份
+        cal.set(Calendar.MONTH, month - 1);
+        //获取某月最大天数
+        return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 }

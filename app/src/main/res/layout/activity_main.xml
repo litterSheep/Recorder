@@ -8,7 +8,7 @@
     tools:context="com.ly.recorder.ui.MainActivity"
     android:orientation="vertical">
 
-    <com.ly.customtitlebar.CustomTitleBar
+    <com.ly.recorder.view.CustomTitleBar
         android:id="@+id/top_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -30,12 +30,14 @@
 
         <EditText
             android:id="@+id/et_money"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
             android:layout_marginLeft="15dp"
+            android:minWidth="120dp"
             android:inputType="numberDecimal"
+            android:padding="5dp"
+            android:background="@color/transparent"
             android:maxLines="1" />
 
         <TextView
@@ -47,6 +49,7 @@
             android:layout_gravity="center_vertical"
             android:drawableRight="@mipmap/xuanze"
             android:drawablePadding="5dp"
+            android:padding="8dp"
             android:textSize="16sp" />
     </LinearLayout>
 

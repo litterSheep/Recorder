@@ -2,9 +2,13 @@ package com.ly.recorder;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.ly.recorder.db.MigrationHelper;
 import com.ly.recorder.db.greendao.DaoMaster;
 import com.ly.recorder.db.greendao.DaoSession;
+import com.ly.recorder.utils.CrashHandler;
+import com.ly.recorder.utils.logger.LogLevel;
+import com.ly.recorder.utils.logger.Logger;
 
 /**
  * Created by ly on 2017/3/2 14:41.
@@ -22,6 +26,14 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        CrashHandler.getInstance().init(getApplicationContext());
+
+        Logger.init("MyLog")
+                .logLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)//日志开关
+                //.hideThreadInfo()
+                .methodCount(3);
+
         setDatabase();
     }
 
@@ -45,6 +57,8 @@ public class App extends Application {
     }
 
     public DaoSession getDaoSession() {
+        if (mDaoSession == null)
+            setDatabase();
         return mDaoSession;
     }
 

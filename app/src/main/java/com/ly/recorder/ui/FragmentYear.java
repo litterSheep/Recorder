@@ -7,8 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ly.recorder.R;
+import com.ly.recorder.db.Account;
+
+import java.util.List;
 
 public class FragmentYear extends Fragment {
+
+    private List<Account> accounts;
 
     public FragmentYear() {
     }
@@ -29,4 +34,11 @@ public class FragmentYear extends Fragment {
         return view;
     }
 
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void initData(List<Account> accounts) {
+        this.accounts = accounts;
+    }
 }
