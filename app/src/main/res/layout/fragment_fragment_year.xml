@@ -1,12 +1,37 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ly.recorder.ui.FragmentYear">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.ly.recorder.ui.FragmentMonth">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="year" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart_month"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chart_h" />
+
+        <CheckBox
+            android:id="@+id/cb_comparison"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:button="@drawable/checkbox_selector"
+            android:padding="3dp"
+            android:layout_margin="2dp"
+            android:text="@string/comparison_year"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart_month"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chart_h"
+            android:layout_below="@+id/line_chart_month"
+            android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
+
+</ScrollView>

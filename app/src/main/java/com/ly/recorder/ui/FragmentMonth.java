@@ -75,6 +75,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         }
         View view = inflater.inflate(R.layout.fragment_fragment_month, container, false);
         cb_comparison = (CheckBox) view.findViewById(R.id.cb_comparison);
+        cb_comparison.setText(getString(R.string.comparison_month));
         cb_comparison.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -173,6 +174,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     public void setData(int year, int month) {
         this.year = year;
         this.month = month;
+        if(mLineChart == null || mPieChart == null){
+            Logger.w("mLineChart/mPieChart == null, return...");
+            return;
+        }
         setLineData();
         setPieData();
     }

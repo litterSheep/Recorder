@@ -12,7 +12,8 @@
     <string name="save_fail">保存失败</string>
     <string name="empty_hint">一分钱都没用，就不记录了吧~~</string>
     <string name="show_no_data">什么也没有，先去入账吧...</string>
-    <string name="comparision">对比上月</string>
+    <string name="comparison_month">对比上月</string>
+    <string name="comparison_year">对比去年</string>
     <string name="no_last_month_data">没有上月的数据</string>
     <string name="click_title_hint">点击标题可以快速切换到今天哦~</string>
     <string name="delete_dialog_title">删除一条记录</string>

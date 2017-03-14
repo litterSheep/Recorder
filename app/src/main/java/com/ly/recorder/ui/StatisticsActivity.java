@@ -66,6 +66,13 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
             fragmentDay = FragmentDay.newInstance();
             fragmentMonth = FragmentMonth.newInstance();
             fragmentYear = FragmentYear.newInstance();
+
+
+//            getFragmentManager().beginTransaction()
+//                    .add(R.id.contentContainer, fragmentDay, FragmentDay.class.getName())
+//                    .add(R.id.contentContainer, fragmentMonth, FragmentMonth.class.getName())
+//                    .add(R.id.contentContainer, fragmentYear, FragmentYear.class.getName())
+//                    .commit();
         }
         initDatePicker();
 
@@ -157,11 +164,11 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
         if (selectedYear == 0) {
             fragmentDay.initData(accountManager.queryForDay(currentYear, currentMonth, currentDay));
             fragmentMonth.initData(accountManager, currentYear, currentMonth);
-            fragmentYear.initData(accountManager.queryForYear(currentYear));
+            fragmentYear.initData(accountManager, currentYear);
         } else {
             fragmentDay.initData(accountManager.queryForDay(selectedYear, selectedMonth, selectedDay));
             fragmentMonth.initData(accountManager, selectedYear, selectedMonth);
-            fragmentYear.initData(accountManager.queryForYear(selectedYear));
+            fragmentYear.initData(accountManager, selectedYear);
         }
     }
 
@@ -213,8 +220,9 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
         List<Account> accountsYear = accountManager.queryForYear(year);
         List<Account> accountsDay = accountManager.queryForDay(year, month, day);
 
-        ((FragmentDay) fragments.get(0)).setData(accountsDay);
-        ((FragmentMonth) fragments.get(1)).setData(year, month);
+        fragmentDay.setData(accountsDay);
+        fragmentMonth.setData(year, month);
+        fragmentYear.setData(year);
 
     }
 

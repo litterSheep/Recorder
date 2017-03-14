@@ -21,6 +21,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
+import com.ly.recorder.utils.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,8 +92,10 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
 
     public void setData(List<Account> list) {
         accounts = list;
-        if (mPieChart == null || accounts == null)
+        if (mPieChart == null || accounts == null){
+            Logger.w("mPieChart/accounts == null, return...");
             return;
+        }
 
         List<PieEntry> entries = getPieEntries();
 

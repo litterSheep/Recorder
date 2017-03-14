@@ -136,6 +136,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    // ******仅供生成测试数据之用
     private void generateData() {
         AccountManager accountManager = new AccountManager();
         for (int year = 2014; year < 2017; year++) {
@@ -146,7 +147,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     int max = 9;
                     int t = random.nextInt(max) % (max - min + 1) + min;
 
-                    float money = random.nextFloat() * 50;
+                    float money = random.nextFloat() * 50*(year-2013);
 
                     Account account = new Account();
                     account.setMoney(money);
