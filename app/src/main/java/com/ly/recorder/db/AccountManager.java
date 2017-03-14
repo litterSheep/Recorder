@@ -22,6 +22,10 @@ public class AccountManager {
         return accountDao.insert(account);
     }
 
+    public void delete(Account account) {
+        accountDao.deleteInTx(account);
+    }
+
     public List<Account> queryAll() {
         return accountDao.queryBuilder().list();
     }
@@ -30,11 +34,11 @@ public class AccountManager {
         return accountDao.queryBuilder().limit(num).orderDesc(AccountDao.Properties.Time).build().list();
     }
 
-    public List<Account> queryForDay(int year, int month, int date) {
+    public List<Account> queryForDay(int year, int month, int day) {
         return accountDao.queryBuilder()
                 .where(AccountDao.Properties.Year.eq(year)
                         , AccountDao.Properties.Month.eq(month)
-                        , AccountDao.Properties.Date.eq(date))
+                        , AccountDao.Properties.Day.eq(day))
                 .build().list();
     }
 
@@ -46,7 +50,7 @@ public class AccountManager {
         return accountDao.queryBuilder()
                 .where(AccountDao.Properties.Year.eq(year)
                         , AccountDao.Properties.Month.eq(month))
-                .orderAsc(AccountDao.Properties.Date)
+                .orderAsc(AccountDao.Properties.Day)
                 .build().list();
     }
 

@@ -1,11 +1,9 @@
 package com.ly.recorder.ui;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.RadioGroup;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -15,7 +13,6 @@ import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.PreferencesUtils;
 import com.ly.recorder.utils.ToastUtil;
-import com.ly.recorder.utils.logger.Logger;
 import com.ly.recorder.view.CustomTitleBar;
 
 import java.util.ArrayList;
@@ -27,25 +24,53 @@ import java.util.List;
  */
 
 public class StatisticsActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
-    private ArrayList<Fragment> fragments;
     private int currentIndex = 1;
-    private FragmentManager fragmentManager;
     private DatePickerDialog datePickerDialog;
     private Calendar calendar;
     private AccountManager accountManager;
-    private int currentYear, currentMonth, currentDay;
+    private int currentYear, currentMonth, currentDay;//当前年月日
+    private int selectedYear, selectedMonth, selectedDay;//筛选选择的年月日
+    private final String YEAR = "year", MONTH = "month", DAY = "day";
+    private final String CURRENT_INDEX = "currentIndex";
 
+    private List<Fragment> fragments;
+    private FragmentDay fragmentDay;
+    private FragmentMonth fragmentMonth;
+
+    private FragmentYear fragmentYear;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
         initViews();
+        if (savedInstanceState != null) {
+            selectedYear = savedInstanceState.getInt(YEAR);
+            selectedMonth = savedInstanceState.getInt(MONTH);
+            selectedDay = savedInstanceState.getInt(DAY);
+            currentIndex = savedInstanceState.getInt(CURRENT_INDEX);
+            if (selectedYear != 0)
+                topTitleBar.setRight_button_text(selectedYear + "-" + selectedMonth + "-" + selectedDay);
+
+            fragmentDay = (FragmentDay) getFragmentManager().findFragmentByTag(FragmentDay.class.getName());
+            if (fragmentDay == null)
+                fragmentDay = FragmentDay.newInstance();
+            fragmentMonth = (FragmentMonth) getFragmentManager().findFragmentByTag(FragmentMonth.class.getName());
+            if (fragmentMonth == null)
+                fragmentMonth = FragmentMonth.newInstance();
+            fragmentYear = (FragmentYear) getFragmentManager().findFragmentByTag(FragmentYear.class.getName());
+            if (fragmentYear == null)
+                fragmentYear = FragmentYear.newInstance();
+        } else {
+            fragmentDay = FragmentDay.newInstance();
+            fragmentMonth = FragmentMonth.newInstance();
+            fragmentYear = FragmentYear.newInstance();
+        }
+        initDatePicker();
 
         initFragment();
-
-        initDatePicker();
+        selectTab(currentIndex);
     }
 
     private void initViews() {
@@ -88,15 +113,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
 
     }
 
-    private void initFragment() {
-        fragmentManager = getSupportFragmentManager();
-
-        if (fragments == null) fragments = new ArrayList<>();
-        fragments.add(FragmentDay.newInstance());
-        fragments.add(FragmentMonth.newInstance());
-        fragments.add(FragmentYear.newInstance());
-
-        fragmentManager.beginTransaction().add(R.id.contentContainer, fragments.get(currentIndex)).commit();
+    private void initDatePicker() {
 
         calendar = Calendar.getInstance();
         currentYear = calendar.get(Calendar.YEAR);
@@ -104,15 +121,6 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
         currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
         accountManager = new AccountManager();
-
-        //初始化fragment中的数据
-        ((FragmentDay) fragments.get(0)).initData(accountManager.queryForDay(currentYear, currentMonth, currentDay));
-        ((FragmentMonth) fragments.get(1)).initData(accountManager, currentYear, currentMonth);
-        ((FragmentYear) fragments.get(2)).initData(accountManager.queryForYear(currentYear));
-    }
-
-    private void initDatePicker() {
-
         int startYear = accountManager.queryMinYear();
 
         datePickerDialog = DatePickerDialog.newInstance(this
@@ -134,31 +142,63 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
 //                , false, false);
     }
 
-    private void selectTab(int index) {
+    private void initFragment() {
         if (fragments == null) {
-            Logger.w("fragments == null...");
-            return;
+            fragments = new ArrayList<>();
+        } else {
+            fragments.clear();
         }
-        if (index != currentIndex) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.hide(fragments.get(currentIndex));
-            Fragment fragment = fragments.get(index);
 
-            if (!fragment.isAdded()) {
-                fragmentTransaction.add(R.id.contentContainer, fragment);
-            } else {//显示之前隐藏的fragment
-                fragmentTransaction.show(fragment);
-            }
-            fragmentTransaction.commit();
+        fragments.add(fragmentDay);
+        fragments.add(fragmentMonth);
+        fragments.add(fragmentYear);
+
+        //初始化fragment中的数据
+        if (selectedYear == 0) {
+            fragmentDay.initData(accountManager.queryForDay(currentYear, currentMonth, currentDay));
+            fragmentMonth.initData(accountManager, currentYear, currentMonth);
+            fragmentYear.initData(accountManager.queryForYear(currentYear));
+        } else {
+            fragmentDay.initData(accountManager.queryForDay(selectedYear, selectedMonth, selectedDay));
+            fragmentMonth.initData(accountManager, selectedYear, selectedMonth);
+            fragmentYear.initData(accountManager.queryForYear(selectedYear));
         }
+    }
+
+    private void selectTab(int index) {
+
+        Fragment fragment = fragments.get(index);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        for (Fragment fragment1 : fragments) {
+            if (fragment1.isAdded() && !fragment1.equals(fragment)) {
+                ft.hide(fragment1);
+            }
+        }
+        if (!fragment.isAdded()) {
+            if (fragment instanceof FragmentDay) {
+                ft.add(R.id.contentContainer, fragment, FragmentDay.class.getName());
+            } else if (fragment instanceof FragmentMonth) {
+                ft.add(R.id.contentContainer, fragment, FragmentMonth.class.getName());
+            } else {
+                ft.add(R.id.contentContainer, fragment, FragmentYear.class.getName());
+            }
+        } else {//显示之前隐藏的fragment
+            ft.show(fragment);
+        }
+        ft.commit();
+
         currentIndex = index;
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        month++;//calendar中月份是从0开始，所以+1
 
-        queryData(year, month, day);
+        selectedYear = year;
+        selectedMonth = month + 1;//calendar中月份是从0开始，所以+1
+        selectedDay = day;
+
+        queryData(selectedYear, selectedMonth, selectedDay);
 
         boolean isUnShow = PreferencesUtils.getBoolean(this, Constants.PREFRENCES_FLAG);
         if (!isUnShow) {
@@ -178,4 +218,14 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putInt(YEAR, selectedYear);
+        outState.putInt(MONTH, selectedMonth);
+        outState.putInt(DAY, selectedDay);
+        outState.putInt(CURRENT_INDEX, currentIndex);
+
+        super.onSaveInstanceState(outState);
+    }
 }

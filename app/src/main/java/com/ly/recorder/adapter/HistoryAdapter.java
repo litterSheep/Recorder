@@ -1,12 +1,14 @@
 package com.ly.recorder.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.utils.TimeUtil;
@@ -61,6 +63,7 @@ public class HistoryAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.item_history, null);
             viewHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_item_time);
+            viewHolder.tv_item_type = (TextView) convertView.findViewById(R.id.tv_item_type);
             viewHolder.tv_money = (TextView) convertView.findViewById(R.id.tv_item_money);
             viewHolder.tv_remark = (TextView) convertView.findViewById(R.id.tv_item_remark);
             convertView.setTag(viewHolder);
@@ -70,15 +73,27 @@ public class HistoryAdapter extends BaseAdapter {
 
         Account account = mlist.get(position);
 
-        viewHolder.tv_time.setText(TimeUtil.getDateByMillisecond(account.getTime(), TimeUtil.FORMAT_MONTH_DAY_TIME));
-        viewHolder.tv_money.setText(account.getMoney() + "元");
-        viewHolder.tv_remark.setText(account.getRemark());
+        viewHolder.tv_time.setText(TimeUtil.formatTimestamp(account.getTime()));
+        String type;
+        if (account.getType() == null) {
+            type = "空类型";
+        } else {
+            type = Constants.TYPES[account.getType()];
+        }
+        viewHolder.tv_item_type.setText(type);
+        viewHolder.tv_money.setText(account.getMoney() + "");
+        if (TextUtils.isEmpty(account.getRemark())) {
+            viewHolder.tv_remark.setVisibility(View.GONE);
+        } else {
+            viewHolder.tv_remark.setVisibility(View.VISIBLE);
+            viewHolder.tv_remark.setText(account.getRemark());
+        }
 
         return convertView;
     }
 
     class ViewHolder {
 
-        TextView tv_time, tv_money, tv_remark;
+        TextView tv_time, tv_money, tv_remark, tv_item_type;
     }
 }

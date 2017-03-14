@@ -78,35 +78,32 @@ public class TimeUtil {
     /**
      * 获取聊天时间
      *
-     * @param @param  timesamp
+     * @param @param  timestamp
      * @param @return
      * @return String
-     * @throws
-     * @Title: getChatTime
-     * @Description: TODO
      */
-    public static String getChatTime(long timesamp) {
+    public static String formatTimestamp(long timestamp) {
         String result = "";
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         Date today = new Date(System.currentTimeMillis());
-        Date otherDay = new Date(timesamp);
+        Date otherDay = new Date(timestamp);
         int temp = Integer.parseInt(sdf.format(today)) - Integer.parseInt(sdf.format(otherDay));
 
-        SimpleDateFormat mformat = new SimpleDateFormat(FORMAT_TIME);
+        //SimpleDateFormat mformat = new SimpleDateFormat(FORMAT_TIME);
         switch (temp) {
             case 0:
-                result = "今天 " + mformat.format(new Date(timesamp));
+                result = "今天 ";// + mformat.format(new Date(timestamp))
                 break;
             case 1:
-                result = "昨天 " + mformat.format(new Date(timesamp));
+                result = "昨天 ";
                 break;
             case 2:
-                result = "前天 " + mformat.format(new Date(timesamp));
+                result = "前天 ";
                 break;
 
             default:
                 SimpleDateFormat f = new SimpleDateFormat(FORMAT_DATE);
-                result = f.format(new Date(timesamp));
+                result = f.format(new Date(timestamp));
                 break;
         }
         return result;

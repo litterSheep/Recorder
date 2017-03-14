@@ -2,37 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minHeight="60dp"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/tv_item_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left"
+        android:gravity="center"
         android:padding="8dp"
+        android:minWidth="100dp"
+        android:layout_gravity="center_vertical"
         android:singleLine="true"
-        android:text="ss" />
+        android:text="ss"
+        android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/tv_item_money"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:padding="8dp"
-        android:layout_marginLeft="5dp"
-        android:singleLine="true"
-        android:text="ss" />
-
-    <TextView
-        android:id="@+id/tv_item_remark"
+        android:id="@+id/tv_item_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:maxEms="10"
+        android:gravity="center"
         android:padding="8dp"
+        android:minWidth="60dp"
+        android:layout_gravity="center_vertical"
         android:singleLine="true"
-        android:text="ss" />
+        android:text="快快"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_money"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:textColor="@color/black_text"
+            android:text="664" />
+
+        <TextView
+            android:id="@+id/tv_item_remark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:maxEms="10"
+            android:layout_marginTop="5dp"
+            android:singleLine="true"
+            android:text="ss"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
 </LinearLayout>

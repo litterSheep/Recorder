@@ -15,6 +15,14 @@
     <string name="comparision">对比上月</string>
     <string name="no_last_month_data">没有上月的数据</string>
     <string name="click_title_hint">点击标题可以快速切换到今天哦~</string>
+    <string name="delete_dialog_title">删除一条记录</string>
+    <string name="delete">删除</string>
+    <string name="cancel">取消</string>
+    <string name="history">-- 历史入账 --</string>
+    <string name="no_history">-- 暂无历史入账 --</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

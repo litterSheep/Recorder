@@ -1,8 +1,8 @@
 package com.ly.recorder.ui;
 
+import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +23,16 @@ import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FragmentDay extends Fragment implements OnChartValueSelectedListener {
-    private PieChart mChart;
+    private PieChart mPieChart;
     private List<Account> accounts;
+    private float total;
 
     public FragmentDay() {
     }
@@ -41,79 +44,62 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //在配置变化(如屏幕旋转，系统字体设置变化)的时候将这个fragment保存下来
+        //setRetainInstance(true);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_day, container, false);
-        initChart(view);
-        setData(accounts);
+        initPieChart(view);
         return view;
     }
 
-    private void initChart(View view) {
-        mChart = (PieChart) view.findViewById(R.id.chart_day);
-        mChart.setUsePercentValues(true);
-        mChart.getDescription().setEnabled(false);
+    private void initPieChart(View view) {
+        mPieChart = (PieChart) view.findViewById(R.id.chart_day);
+        mPieChart.setUsePercentValues(true);
+        mPieChart.getDescription().setEnabled(false);
         //饼图与文字描述的padding
-        mChart.setExtraOffsets(5, 10, 25, 5);
+        mPieChart.setExtraOffsets(5, 10, 25, 5);
 
-        mChart.setDragDecelerationFrictionCoef(0.95f);
+        mPieChart.setDragDecelerationFrictionCoef(0.95f);
 
-        mChart.setDrawHoleEnabled(true);
-        mChart.setHoleColor(Color.WHITE);
+        mPieChart.setDrawHoleEnabled(true);
+        mPieChart.setHoleColor(Color.WHITE);
 
-        mChart.setTransparentCircleColor(Color.WHITE);
-        mChart.setTransparentCircleAlpha(55);//中央圆孔背景透明度
+        mPieChart.setTransparentCircleColor(Color.WHITE);
+        mPieChart.setTransparentCircleAlpha(55);//中央圆孔背景透明度
 
-        mChart.setHoleRadius(20f);//中央圆孔的大小
-        mChart.setTransparentCircleRadius(20f);//中央圆孔透明圈大小
+        mPieChart.setHoleRadius(20f);//中央圆孔的大小
+        mPieChart.setTransparentCircleRadius(23f);//中央圆孔透明圈大小
 
-        mChart.setDrawCenterText(false);//中间的文字
-        //mChart.setCenterTextTypeface(mTfLight);
-        //mChart.setCenterText(getString(R.string.app_name));
+        mPieChart.setDrawCenterText(false);//中间的文字
+        //mPieChart.setCenterTextTypeface(mTfLight);
+        //mPieChart.setCenterText(getString(R.string.app_name));
 
-        mChart.setRotationAngle(0);
+        mPieChart.setRotationAngle(0);
         // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
-        mChart.setHighlightPerTapEnabled(true);
+        mPieChart.setRotationEnabled(true);
+        mPieChart.setHighlightPerTapEnabled(true);
 
         // add a selection listener
-        mChart.setOnChartValueSelectedListener(this);
+        mPieChart.setOnChartValueSelectedListener(this);
+
+        setData(accounts);
     }
 
     public void setData(List<Account> list) {
         accounts = list;
-        if (mChart == null || accounts == null)
+        if (mPieChart == null || accounts == null)
             return;
 
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        float total = 0;
-        //key:type  value:该类型对应的总花费
-        Map<Integer, Float> types = new HashMap<>();
-        for (Account account : accounts) {
-            Float money = account.getMoney();
-            total += money;
-
-            Integer type = account.getType();
-            if (type == null)
-                type = Constants.TYPES.length - 1;//设置为默认值
-            if (types.containsKey(type)) {
-                money += types.get(type);
-            }
-            types.put(type, money);
-        }
-
-        for (Integer type : types.keySet()) {
-            float money = types.get(type);
-            entries.add(new PieEntry(money, Constants.TYPES[type] + money + "元"));
-        }
+        List<PieEntry> entries = getPieEntries();
 
         if (entries.size() > 0) {
 
             PieDataSet dataSet;
-            PieData pieData = mChart.getData();
+            PieData pieData = mPieChart.getData();
 
             if (pieData != null && pieData.getDataSetCount() > 0) {
 
@@ -121,7 +107,7 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
                 dataSet.setValues(entries);
 
                 pieData.notifyDataChanged();
-                mChart.notifyDataSetChanged();
+                mPieChart.notifyDataSetChanged();
             } else {
                 dataSet = new PieDataSet(entries, "共花费" + total + "元");
 
@@ -161,39 +147,67 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
                 data.setValueTextColor(Color.WHITE);
                 //data.setValueTypeface(mTfLight);
                 // undo all highlights
-                mChart.setData(data);
+                mPieChart.setData(data);
             }
         } else {
-            mChart.clear();
+            mPieChart.clear();
         }
-        mChart.highlightValues(null);
-        //mChart.invalidate();
+        mPieChart.highlightValues(null);
+        //mPieChart.invalidate();
 
-        mChart.setNoDataText(getString(R.string.show_no_data));
-        mChart.setNoDataTextColor(getResources().getColor(R.color.gray_text));
+        mPieChart.setNoDataText(getString(R.string.show_no_data));
+        mPieChart.setNoDataTextColor(getResources().getColor(R.color.gray_text));
 
-        mChart.animateY(1200, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
+        mPieChart.animateY(1200, Easing.EasingOption.EaseInOutQuad);
+        // mPieChart.spin(2000, 0, 360);
 
-        Legend l = mChart.getLegend();
+        Legend l = mPieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
-        l.setXEntrySpace(20f);
-        l.setYEntrySpace(20f);
-        l.setYOffset(0f);
+        l.setYEntrySpace(5f);//描述文字之间的间隔
+        l.setYOffset(10f);//描述文字marginTop
 
         // entry label styling
         //在扇形区内隐藏每个类别的描述
-        mChart.setDrawEntryLabels(false);
-        mChart.setEntryLabelColor(Color.GRAY);
-        //mChart.setEntryLabelTypeface(mTfRegular);
-        mChart.setEntryLabelTextSize(12f);
+        mPieChart.setDrawEntryLabels(false);
+        mPieChart.setEntryLabelColor(Color.GRAY);
+        //mPieChart.setEntryLabelTypeface(mTfRegular);
+        mPieChart.setEntryLabelTextSize(12f);
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    private List<PieEntry> getPieEntries() {
+        List<PieEntry> entries = new ArrayList<>();
+        //key:type  value:该类型对应的总花费
+        Map<Integer, Float> types = new HashMap<>();
+        for (Account account : accounts) {
+            Float money = account.getMoney();
+            total += money;
+
+            Integer type = account.getType();
+            if (type == null)
+                type = Constants.TYPES.length - 1;//设置为默认值
+            if (types.containsKey(type)) {
+                money += types.get(type);
+            }
+            types.put(type, money);
+        }
+
+        for (Integer type : types.keySet()) {
+            float money = types.get(type);
+            entries.add(new PieEntry(money, Constants.TYPES[type] + money + "元"));
+        }
+        //按类别金额从降序排列
+        Collections.sort(entries, new Comparator<PieEntry>() {
+            @Override
+            public int compare(PieEntry o1, PieEntry o2) {
+                if (o1.getValue() > o2.getValue())
+                    return -1;
+                return 1;
+            }
+        });
+        return entries;
     }
 
     public void initData(List<Account> accounts) {

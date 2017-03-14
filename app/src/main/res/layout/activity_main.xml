@@ -81,10 +81,11 @@
         android:background="@drawable/btn_register" />
 
     <TextView
+        android:id="@+id/tv_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="-- 历史入账 --"
+        android:text="@string/history"
         android:gravity="center" />
 
     <ListView

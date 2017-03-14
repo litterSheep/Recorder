@@ -27,7 +27,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Year = new Property(1, Integer.class, "year", false, "YEAR");
         public final static Property Month = new Property(2, Integer.class, "month", false, "MONTH");
-        public final static Property Date = new Property(3, Integer.class, "date", false, "DATE");
+        public final static Property Day = new Property(3, Integer.class, "day", false, "DAY");
         public final static Property Time = new Property(4, Long.class, "time", false, "TIME");
         public final static Property Money = new Property(5, Float.class, "money", false, "MONEY");
         public final static Property Remark = new Property(6, String.class, "remark", false, "REMARK");
@@ -50,7 +50,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"YEAR\" INTEGER," + // 1: year
                 "\"MONTH\" INTEGER," + // 2: month
-                "\"DATE\" INTEGER," + // 3: date
+                "\"DAY\" INTEGER," + // 3: day
                 "\"TIME\" INTEGER," + // 4: time
                 "\"MONEY\" REAL," + // 5: money
                 "\"REMARK\" TEXT," + // 6: remark
@@ -82,9 +82,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
             stmt.bindLong(3, month);
         }
 
-        Integer date = entity.getDate();
-        if (date != null) {
-            stmt.bindLong(4, date);
+        Integer day = entity.getDay();
+        if (day != null) {
+            stmt.bindLong(4, day);
         }
 
         Long time = entity.getTime();
@@ -127,9 +127,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
             stmt.bindLong(3, month);
         }
 
-        Integer date = entity.getDate();
-        if (date != null) {
-            stmt.bindLong(4, date);
+        Integer day = entity.getDay();
+        if (day != null) {
+            stmt.bindLong(4, day);
         }
 
         Long time = entity.getTime();
@@ -164,7 +164,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
                 cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // year
                 cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // month
-                cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // date
+                cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // day
                 cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // time
                 cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5), // money
                 cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // remark
@@ -178,7 +178,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setYear(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
         entity.setMonth(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setDate(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setDay(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setMoney(cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5));
         entity.setRemark(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));

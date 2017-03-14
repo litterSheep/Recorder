@@ -14,19 +14,19 @@ public class Account {
     private Long id;
     private Integer year;
     private Integer month;
-    private Integer date;
+    private Integer day;
     private Long time;
     private Float money;
     private String remark;
     private Integer type;
 
-    @Generated(hash = 1959441386)
-    public Account(Long id, Integer year, Integer month, Integer date, Long time,
+    @Generated(hash = 1928322829)
+    public Account(Long id, Integer year, Integer month, Integer day, Long time,
                    Float money, String remark, Integer type) {
         this.id = id;
         this.year = year;
         this.month = month;
-        this.date = date;
+        this.day = day;
         this.time = time;
         this.money = money;
         this.remark = remark;
@@ -53,11 +53,13 @@ public class Account {
     public void setMonth(Integer month) {
         this.month = month;
     }
-    public Integer getDate() {
-        return this.date;
+
+    public Integer getDay() {
+        return this.day;
     }
-    public void setDate(Integer date) {
-        this.date = date;
+
+    public void setDay(Integer day) {
+        this.day = day;
     }
     public Long getTime() {
         return this.time;
@@ -77,11 +79,9 @@ public class Account {
     public void setRemark(String remark) {
         this.remark = remark;
     }
-
     public Integer getType() {
         return this.type;
     }
-
     public void setType(Integer type) {
         this.type = type;
     }
