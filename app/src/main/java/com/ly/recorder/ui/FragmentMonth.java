@@ -427,7 +427,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
 
             Integer type = account.getType();
             if (type == null)
-                type = Constants.TYPES.length - 1;//设置为默认值
+                type = Constants.TYPES_OUT.length - 1;//设置为默认值
             if (types.containsKey(type)) {
                 money += types.get(type);
             }
@@ -436,7 +436,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
 
         for (Integer type : types.keySet()) {
             float money = types.get(type);
-            entries.add(new PieEntry(money, Constants.TYPES[type] + money + "元"));
+            entries.add(new PieEntry(money, Constants.TYPES_OUT[type] + money + "元"));
         }
         //按类别金额从降序排列
         Collections.sort(entries, new Comparator<PieEntry>() {

@@ -78,7 +78,7 @@ public class HistoryAdapter extends BaseAdapter {
         if (account.getType() == null) {
             type = "空类型";
         } else {
-            type = Constants.TYPES[account.getType()];
+            type = Constants.TYPES_OUT[account.getType()];
         }
         viewHolder.tv_item_type.setText(type);
         viewHolder.tv_money.setText(account.getMoney() + "");

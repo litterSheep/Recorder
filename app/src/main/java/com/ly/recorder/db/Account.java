@@ -1,5 +1,7 @@
 package com.ly.recorder.db;
 
+import com.ly.recorder.Constants;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -18,6 +20,9 @@ public class Account {
     private Long time;
     private Float money;
     private String remark;
+    /**
+     * 对应{@link Constants.TYPES_OUT} 中的 TYPES_OUT/TYPES_IN 如果是支出则type是TYPES_OUT的下标，为收入则-type为TYPES_IN的下标
+     */
     private Integer type;
 
     @Generated(hash = 1928322829)

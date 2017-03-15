@@ -12,7 +12,8 @@ public class Constants {
 
     public static final String DB_NAME = "recorder.db";
 
-    public static final String[] TYPES = {"饭菜", "烟酒", "零食", "娱乐", "话费", "交通", "衣服", "房租", "水电", "其他"};
+    public static final String[] TYPES_OUT = {"饭菜", "烟酒", "零食", "娱乐", "话费", "交通", "衣服", "房租", "水电", "其他"};
+    public static final String[] TYPES_IN = {"饭菜", "烟酒", "零食", "娱乐", "话费", "交通", "衣服", "房租", "水电", "其他"};
 
 
     public static final String BASE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "ly";

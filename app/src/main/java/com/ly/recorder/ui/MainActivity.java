@@ -34,7 +34,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private List<Account> mlist;
     private AccountManager accountManager;
     private ListPopupWindow listPopupWindow;
-    private int type = Constants.TYPES.length - 1;
+    private int type = Constants.TYPES_OUT.length - 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,14 +158,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void showTypePopup(View view) {
         if (listPopupWindow == null) {
             List<String> list = new ArrayList<>();
-            for (String s : Constants.TYPES) {
+            for (String s : Constants.TYPES_OUT) {
                 list.add(s);
             }
             listPopupWindow = new ListPopupWindow(this, list, new ListPopupWindow.OnPopupItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
                     type = position;
-                    tv_record_type.setText(Constants.TYPES[position]);
+                    tv_record_type.setText(Constants.TYPES_OUT[position]);
                 }
             });
         }
