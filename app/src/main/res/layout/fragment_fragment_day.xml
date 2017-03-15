@@ -1,7 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.ly.recorder.ui.FragmentDay">
 
     <com.github.mikephil.charting.charts.PieChart
@@ -10,4 +11,18 @@
         android:layout_height="@dimen/chart_h" />
 
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/day_history" />
+
+    <com.ly.recorder.view.NoScrollListView
+        android:id="@+id/lv_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:listSelector="@color/transparent" />
+</LinearLayout>

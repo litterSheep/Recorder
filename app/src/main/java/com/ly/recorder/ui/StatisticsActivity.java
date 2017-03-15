@@ -24,15 +24,14 @@ import java.util.List;
  */
 
 public class StatisticsActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+    private final String YEAR = "year", MONTH = "month", DAY = "day";
+    private final String CURRENT_INDEX = "currentIndex";
     private int currentIndex = 1;
     private DatePickerDialog datePickerDialog;
     private Calendar calendar;
     private AccountManager accountManager;
     private int currentYear, currentMonth, currentDay;//当前年月日
     private int selectedYear, selectedMonth, selectedDay;//筛选选择的年月日
-    private final String YEAR = "year", MONTH = "month", DAY = "day";
-    private final String CURRENT_INDEX = "currentIndex";
-
     private List<Fragment> fragments;
     private FragmentDay fragmentDay;
     private FragmentMonth fragmentMonth;
@@ -83,7 +82,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
     private void initViews() {
 
         topTitleBar.setTitle_text(getString(R.string.title_statistics));
-        topTitleBar.setRight_button_text("筛选");
+        topTitleBar.setRight_button_imageId(R.mipmap.date);
         topTitleBar.setOnRightClickListener(new CustomTitleBar.OnRightClickListener() {
             @Override
             public void onRightClick() {
@@ -215,6 +214,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
     }
 
     private void queryData(int year, int month, int day) {
+        topTitleBar.setNullRightButtonImage();
         topTitleBar.setRight_button_text(year + "-" + month + "-" + day);
 
         List<Account> accountsYear = accountManager.queryForYear(year);

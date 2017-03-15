@@ -31,6 +31,7 @@ import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.TimeUtil;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
+import com.ly.recorder.view.ChartMarkerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,14 +42,14 @@ import java.util.List;
 import java.util.Map;
 
 public class FragmentMonth extends Fragment implements OnChartValueSelectedListener {
+    private final String IS_OPEN_COMPARISON = "isOpenComparison";
+    private final String TOTAL_PREVIOUS = "totalPrevious";
+    private final String TOTAL_CURRENT = "totalCurrent";
     private AccountManager accountManager;
     private LineChart mLineChart;
     private PieChart mPieChart;
     private int year, month;//选定的月份
     private boolean isOpenComparison = false;//是否开启与上月对比
-    private final String IS_OPEN_COMPARISON = "isOpenComparison";
-    private final String TOTAL_PREVIOUS = "totalPrevious";
-    private final String TOTAL_CURRENT = "totalCurrent";
     private int totalPrevious, totalCurrent;//上个月总花费和本月总花费
     private CheckBox cb_comparison;
 
@@ -137,7 +138,12 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         xAxis.setAxisMinimum(1f);
         xAxis.setAxisMaximum(28f);
 
-        //mLineChart.setOnChartValueSelectedListener(this);
+        //mLineChart.setOnChartGestureListener(this);
+        mLineChart.setOnChartValueSelectedListener(this);
+
+        ChartMarkerView mv = new ChartMarkerView(getActivity(), R.layout.custom_marker_view, ChartMarkerView.CHART_MONTH);
+        mv.setChartView(mLineChart); // For bounds control
+        mLineChart.setMarker(mv); // Set the marker to the chart
     }
 
     private void initPieChart(View view) {
@@ -174,7 +180,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     public void setData(int year, int month) {
         this.year = year;
         this.month = month;
-        if(mLineChart == null || mPieChart == null){
+        if (mLineChart == null || mPieChart == null) {
             Logger.w("mLineChart/mPieChart == null, return...");
             return;
         }
@@ -204,6 +210,8 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         }
 
         if (entries != null && entries.size() > 0 || entriesLastMonth != null && entriesLastMonth.size() > 0) {
+            String labelCurrent = "共花费：" + totalCurrent + "元";
+            String labelPrevious = "上一月共花费：" + totalPrevious + "元";
             //一条线就是一组数据集
             LineDataSet dataSetCurrentMonth, dataSetLastMonth;
             LineData mChartData = mLineChart.getData();
@@ -211,17 +219,19 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 dataSetCurrentMonth = (LineDataSet) mChartData.getDataSetByIndex(0);
                 //setLineStyle(dataSetCurrentMonth,getResources().getColor(R.color.mainColor));
                 dataSetCurrentMonth.setValues(entries);
+                dataSetCurrentMonth.setLabel(labelCurrent);
                 if (isOpenComparison) {
                     if (entriesLastMonth != null && entriesLastMonth.size() > 0) {
                         dataSetLastMonth = (LineDataSet) mChartData.getDataSetByIndex(1);
                         if (dataSetLastMonth == null) {//还未添加过数据
-                            dataSetLastMonth = new LineDataSet(entriesLastMonth, "上月共花费：" + totalPrevious + "元");
+                            dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
                             setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_line));
 
                             LineData lineData = mLineChart.getLineData();
                             lineData.addDataSet(dataSetLastMonth);
                         } else {
                             dataSetLastMonth.setValues(entriesLastMonth);
+                            dataSetLastMonth.setLabel(labelPrevious);
                         }
                     } else {
                         Logger.w("entriesLastMonth 没有上月的数据...");
@@ -235,13 +245,13 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 mLineChart.notifyDataSetChanged();
             } else {
 
-                dataSetCurrentMonth = new LineDataSet(entries, "本月共花费：" + totalCurrent + "元"); // add entries to dataset
+                dataSetCurrentMonth = new LineDataSet(entries, labelCurrent); // add entries to dataset
 
                 setLineStyle(dataSetCurrentMonth, getResources().getColor(R.color.mainColor));
 
                 LineData lineData;
                 if (isOpenComparison && entriesLastMonth != null && entriesLastMonth.size() > 0) {
-                    dataSetLastMonth = new LineDataSet(entriesLastMonth, "上月共花费：" + totalPrevious + "元");
+                    dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
                     setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_text));
                     lineData = new LineData(dataSetCurrentMonth, dataSetLastMonth);
                 } else {
@@ -273,15 +283,17 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
             PieDataSet dataSet;
             PieData pieData = mPieChart.getData();
 
+            String label = "共花费" + totalCurrent + "元";
             if (pieData != null && pieData.getDataSetCount() > 0) {
 
                 dataSet = (PieDataSet) pieData.getDataSet();
                 dataSet.setValues(entries);
+                dataSet.setLabel(label);
 
                 pieData.notifyDataChanged();
                 mPieChart.notifyDataSetChanged();
             } else {
-                dataSet = new PieDataSet(entries, "共花费" + totalCurrent + "元");
+                dataSet = new PieDataSet(entries, label);
 
                 //dataSet.setDrawIcons(false);
                 //dataSet.setIconsOffset(new MPPointF(0, 40));
@@ -359,7 +371,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         dataSet.setLineWidth(1.8f);
         dataSet.setValueTextSize(8f);
         dataSet.setHighLightColor(Color.TRANSPARENT);
-        dataSet.setHighlightEnabled(false);
+        dataSet.setHighlightEnabled(true);//一定要为true才会显示marker
     }
 
     private List<Entry> getLineEntries(List<Account> list) {
@@ -380,12 +392,12 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         }
 
         //这个月最后一天(X轴展示的日期)
-        int lastDay = TimeUtil.getLastDayOfMonth(year, month);
+        int lastDay = TimeUtil.getLastDayOfMonth(year, month) + 1;
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         int currentMonth = calendar.get(Calendar.MONTH) + 1;
         if (currentYear == year && currentMonth == month) {//选定的月份就是本月
-            lastDay = list.get(list.size() - 1).getDay();
+            lastDay = list.get(list.size() - 1).getDay() + 1;
         }
         for (int i = 1; i < lastDay; i++) {
             Float money = temp.get(i);
@@ -395,8 +407,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         }
 
         if (isOpenComparison) {
+            totalPrevious = 0;
             totalPrevious = total;
         } else {
+            totalCurrent = 0;
             totalCurrent = total;
         }
         return entries;

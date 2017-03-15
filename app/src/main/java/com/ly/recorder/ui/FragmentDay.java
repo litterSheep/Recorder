@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -20,8 +21,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
+import com.ly.recorder.adapter.HistoryAdapter;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.utils.logger.Logger;
+import com.ly.recorder.view.NoScrollListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +37,9 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
     private PieChart mPieChart;
     private List<Account> accounts;
     private float total;
+    private TextView tv_history;
+    private NoScrollListView listView;
+    private HistoryAdapter adapter;
 
     public FragmentDay() {
     }
@@ -53,6 +59,9 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_day, container, false);
+        tv_history = (TextView) view.findViewById(R.id.tv_history);
+        listView = (NoScrollListView) view.findViewById(R.id.lv_history);
+
         initPieChart(view);
         return view;
     }
@@ -90,12 +99,27 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
         setData(accounts);
     }
 
+    private void setAdapter() {
+        if (adapter == null) {
+            adapter = new HistoryAdapter(accounts, getActivity());
+            listView.setAdapter(adapter);
+        } else {
+            adapter.setList(accounts);
+        }
+    }
+
     public void setData(List<Account> list) {
         accounts = list;
-        if (mPieChart == null || accounts == null){
+        if (mPieChart == null || accounts == null) {
             Logger.w("mPieChart/accounts == null, return...");
             return;
         }
+        if (accounts.size() == 0) {
+            tv_history.setText(getString(R.string.no_day_history));
+        } else {
+            tv_history.setText(getString(R.string.day_history));
+        }
+        setAdapter();
 
         List<PieEntry> entries = getPieEntries();
 
@@ -108,6 +132,7 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
 
                 dataSet = (PieDataSet) pieData.getDataSet();
                 dataSet.setValues(entries);
+                dataSet.setLabel("共花费" + total + "元");
 
                 pieData.notifyDataChanged();
                 mPieChart.notifyDataSetChanged();
@@ -184,6 +209,7 @@ public class FragmentDay extends Fragment implements OnChartValueSelectedListene
         List<PieEntry> entries = new ArrayList<>();
         //key:type  value:该类型对应的总花费
         Map<Integer, Float> types = new HashMap<>();
+        total = 0;
         for (Account account : accounts) {
             Float money = account.getMoney();
             total += money;

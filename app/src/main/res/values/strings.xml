@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">记账精灵</string>
+    <string name="app_name">大神记账</string>
 
     <string name="title_record">记账</string>
     <string name="title_statistics">统计</string>
@@ -20,6 +20,8 @@
     <string name="delete">删除</string>
     <string name="cancel">取消</string>
     <string name="history">-- 历史入账 --</string>
+    <string name="day_history">-- 今日账单 --</string>
+    <string name="no_day_history">-- 今日没有支出 --</string>
     <string name="no_history">-- 暂无历史入账 --</string>
 
     <!-- TODO: Remove or change this placeholder text -->

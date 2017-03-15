@@ -247,7 +247,7 @@ public class CustomTitleBar extends LinearLayout {
     }
 
     /**
-     * 设置右边保存按钮的资源图片
+     * 设置右边按钮的资源图片
      *
      * @param right_button_imageId
      */
@@ -261,6 +261,10 @@ public class CustomTitleBar extends LinearLayout {
             right_button.setPadding(0, 0, padding, 0);
             right_button.setCompoundDrawables(null, null, drawable, null);
         }
+    }
+
+    public void setNullRightButtonImage() {
+        right_button.setCompoundDrawables(null, null, null, null);
     }
 
     private int dp2px(Context mContext, float value) {
@@ -377,18 +381,6 @@ public class CustomTitleBar extends LinearLayout {
         title.setTextSize(title_textSize);
     }
 
-    public interface OnLeftClickListener {
-        void onLeftClick();
-    }
-
-    public interface OnRightClickListener {
-        void onRightClick();
-    }
-
-    public interface OnTitleClickListener {
-        void onTitleClick();
-    }
-
     public void setOnLeftClickListener(OnLeftClickListener onLeftClickListener) {
         this.onLeftClickListener = onLeftClickListener;
     }
@@ -399,5 +391,17 @@ public class CustomTitleBar extends LinearLayout {
 
     public void setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
         this.onTitleClickListener = onTitleClickListener;
+    }
+
+    public interface OnLeftClickListener {
+        void onLeftClick();
+    }
+
+    public interface OnRightClickListener {
+        void onRightClick();
+    }
+
+    public interface OnTitleClickListener {
+        void onTitleClick();
     }
 }

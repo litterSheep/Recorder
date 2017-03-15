@@ -30,6 +30,7 @@ import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
+import com.ly.recorder.view.ChartMarkerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,14 +42,14 @@ import java.util.Map;
 
 public class FragmentYear extends Fragment implements OnChartValueSelectedListener {
 
+    private final String IS_OPEN_COMPARISON = "isOpenComparison";
+    private final String TOTAL_PREVIOUS = "totalPrevious";
+    private final String TOTAL_CURRENT = "totalCurrent";
     private AccountManager accountManager;
     private LineChart mLineChart;
     private PieChart mPieChart;
     private int year;//选定的月份
     private boolean isOpenComparison = false;//是否开启与上月对比
-    private final String IS_OPEN_COMPARISON = "isOpenComparison";
-    private final String TOTAL_PREVIOUS = "totalPrevious";
-    private final String TOTAL_CURRENT = "totalCurrent";
     private int totalPrevious, totalCurrent;//上一年月总花费和本年总花费
     private CheckBox cb_comparison;
 
@@ -137,6 +138,10 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         xAxis.setAxisMaximum(12f);
 
         //mLineChart.setOnChartValueSelectedListener(this);
+
+        ChartMarkerView mv = new ChartMarkerView(getActivity(), R.layout.custom_marker_view, ChartMarkerView.CHART_YEAR);
+        mv.setChartView(mLineChart); // For bounds control
+        mLineChart.setMarker(mv); // Set the marker to the chart
     }
 
     private void initPieChart(View view) {
@@ -172,7 +177,7 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
 
     public void setData(int year) {
         this.year = year;
-        if(mLineChart == null || mPieChart == null){
+        if (mLineChart == null || mPieChart == null) {
             Logger.w("mLineChart/mPieChart == null, return...");
             return;
         }
@@ -186,7 +191,7 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         //上年数据
         List<Entry> entriesLastYear = null;
         if (isOpenComparison) {
-            entriesLastYear = getLineEntries(getList(year-1));
+            entriesLastYear = getLineEntries(getList(year - 1));
             if (entriesLastYear == null || entriesLastYear.size() == 0) {
                 ToastUtil.showToast(getActivity(), getString(R.string.no_last_month_data));
                 cb_comparison.setChecked(false);
@@ -196,48 +201,52 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         }
 
         if (entries != null && entries.size() > 0 || entriesLastYear != null && entriesLastYear.size() > 0) {
+            String labelCurrent = "共花费：" + totalCurrent + "元";
+            String labelPrevious = "上一年共花费：" + totalPrevious + "元";
             //一条线就是一组数据集
-            LineDataSet dataSetCurrentMonth, dataSetLastMonth;
+            LineDataSet dataSetCurrent, dataSetPrevious;
             LineData mChartData = mLineChart.getData();
             if (mChartData != null && mChartData.getDataSetCount() > 0) {
-                dataSetCurrentMonth = (LineDataSet) mChartData.getDataSetByIndex(0);
+                dataSetCurrent = (LineDataSet) mChartData.getDataSetByIndex(0);
                 //setLineStyle(dataSetCurrentMonth,getResources().getColor(R.color.mainColor));
-                dataSetCurrentMonth.setValues(entries);
+                dataSetCurrent.setValues(entries);
+                dataSetCurrent.setLabel(labelCurrent);
                 if (isOpenComparison) {
                     if (entriesLastYear != null && entriesLastYear.size() > 0) {
-                        dataSetLastMonth = (LineDataSet) mChartData.getDataSetByIndex(1);
-                        if (dataSetLastMonth == null) {//还未添加过数据
-                            dataSetLastMonth = new LineDataSet(entriesLastYear, "去年共花费：" + totalPrevious + "元");
-                            setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_line));
+                        dataSetPrevious = (LineDataSet) mChartData.getDataSetByIndex(1);
+                        if (dataSetPrevious == null) {//还未添加过数据
+                            dataSetPrevious = new LineDataSet(entriesLastYear, labelPrevious);
+                            setLineStyle(dataSetPrevious, getResources().getColor(R.color.gray_line));
 
                             LineData lineData = mLineChart.getLineData();
-                            lineData.addDataSet(dataSetLastMonth);
+                            lineData.addDataSet(dataSetPrevious);
                         } else {
-                            dataSetLastMonth.setValues(entriesLastYear);
+                            dataSetPrevious.setValues(entriesLastYear);
+                            dataSetPrevious.setLabel(labelPrevious);
                         }
                     } else {
                         Logger.w("entriesLastMonth 没有去年的数据...");
                     }
                 } else {
-                    dataSetLastMonth = (LineDataSet) mChartData.getDataSetByIndex(1);
-                    if (dataSetLastMonth != null)
-                        mLineChart.getLineData().removeDataSet(dataSetLastMonth);
+                    dataSetPrevious = (LineDataSet) mChartData.getDataSetByIndex(1);
+                    if (dataSetPrevious != null)
+                        mLineChart.getLineData().removeDataSet(dataSetPrevious);
                 }
                 mChartData.notifyDataChanged();
                 mLineChart.notifyDataSetChanged();
             } else {
 
-                dataSetCurrentMonth = new LineDataSet(entries, "今年共花费：" + totalCurrent + "元"); // add entries to dataset
+                dataSetCurrent = new LineDataSet(entries, labelCurrent); // add entries to dataset
 
-                setLineStyle(dataSetCurrentMonth, getResources().getColor(R.color.mainColor));
+                setLineStyle(dataSetCurrent, getResources().getColor(R.color.mainColor));
 
                 LineData lineData;
                 if (isOpenComparison && entriesLastYear != null && entriesLastYear.size() > 0) {
-                    dataSetLastMonth = new LineDataSet(entriesLastYear, "去年共花费：" + totalPrevious + "元");
-                    setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_text));
-                    lineData = new LineData(dataSetCurrentMonth, dataSetLastMonth);
+                    dataSetPrevious = new LineDataSet(entriesLastYear, labelPrevious);
+                    setLineStyle(dataSetPrevious, getResources().getColor(R.color.gray_text));
+                    lineData = new LineData(dataSetCurrent, dataSetPrevious);
                 } else {
-                    lineData = new LineData(dataSetCurrentMonth);
+                    lineData = new LineData(dataSetCurrent);
                 }
                 mLineChart.setData(lineData);
             }
@@ -264,16 +273,18 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
 
             PieDataSet dataSet;
             PieData pieData = mPieChart.getData();
+            String label = "共花费" + totalCurrent + "元";
 
             if (pieData != null && pieData.getDataSetCount() > 0) {
 
                 dataSet = (PieDataSet) pieData.getDataSet();
                 dataSet.setValues(entries);
+                dataSet.setLabel(label);
 
                 pieData.notifyDataChanged();
                 mPieChart.notifyDataSetChanged();
             } else {
-                dataSet = new PieDataSet(entries, "共花费" + totalCurrent + "元");
+                dataSet = new PieDataSet(entries, label);
 
                 //dataSet.setDrawIcons(false);
                 //dataSet.setIconsOffset(new MPPointF(0, 40));
@@ -351,7 +362,7 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         dataSet.setLineWidth(1.8f);
         dataSet.setValueTextSize(8f);
         dataSet.setHighLightColor(Color.TRANSPARENT);
-        dataSet.setHighlightEnabled(false);
+        dataSet.setHighlightEnabled(true);
     }
 
     private List<Entry> getLineEntries(List<Account> list) {
@@ -372,11 +383,11 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         }
 
         //这个年最后一月(X轴展示的月份)
-        int lastMonth = 12;
+        int lastMonth = 12 + 1;
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         if (currentYear == year) {//选定的年份就是本年
-            lastMonth = list.get(list.size() - 1).getMonth();
+            lastMonth = list.get(list.size() - 1).getMonth() + 1;
         }
         for (int i = 1; i < lastMonth; i++) {
             Float money = temp.get(i);
@@ -386,8 +397,10 @@ public class FragmentYear extends Fragment implements OnChartValueSelectedListen
         }
 
         if (isOpenComparison) {
+            totalPrevious = 0;
             totalPrevious = total;
         } else {
+            totalCurrent = 0;
             totalCurrent = total;
         }
         return entries;
