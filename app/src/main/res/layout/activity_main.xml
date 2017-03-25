@@ -5,20 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
-    tools:context="com.ly.recorder.ui.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.ly.recorder.ui.MainActivity">
 
     <com.ly.recorder.view.CustomTitleBar
         android:id="@+id/top_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         android:padding="10dp">
 
         <TextView
@@ -34,22 +33,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
-            android:minWidth="120dp"
-            android:inputType="numberDecimal"
-            android:padding="5dp"
             android:background="@color/transparent"
-            android:maxLines="1" />
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:minWidth="120dp"
+            android:padding="5dp" />
 
         <TextView
             android:id="@+id/tv_record_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/record_type"
-            android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
-            android:drawableRight="@mipmap/xuanze"
+            android:layout_marginLeft="10dp"
             android:drawablePadding="5dp"
+            android:drawableRight="@mipmap/xuanze"
             android:padding="8dp"
+            android:text="@string/record_type"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -57,42 +56,29 @@
         android:id="@+id/et_remark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:minHeight="100dp"
-        android:hint="@string/record_remark"
-        android:textSize="16sp"
-        android:gravity="top"
-        android:padding="10dp"
         android:layout_marginTop="5dp"
         android:background="@color/transparent"
-        android:inputType="text" />
+        android:gravity="top"
+        android:hint="@string/record_remark"
+        android:inputType="text"
+        android:maxLines="1"
+        android:minHeight="130dp"
+        android:padding="10dp"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_commit"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:text="@string/record_commit"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:padding="12dp"
-        android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/btn_register" />
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_register"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/record_commit"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tv_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/history"
-        android:gravity="center" />
-
-    <ListView
-        android:id="@+id/lv_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:listSelector="@color/transparent" />
+    <include layout="@layout/include_list" />
 
 </LinearLayout>

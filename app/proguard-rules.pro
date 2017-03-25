@@ -19,6 +19,9 @@
 #忽略警告
 -ignorewarning
 
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+
 -keep class com.github.**{*;}
 #-keep com.fourmob.**{*;}
 

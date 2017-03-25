@@ -15,6 +15,8 @@ import com.ly.recorder.R;
 import com.ly.recorder.adapter.HistoryAdapter;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
+import com.ly.recorder.entity.SectionType;
+import com.ly.recorder.entity.Type;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
 import com.ly.recorder.view.CustomTitleBar;
@@ -34,7 +36,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private List<Account> mlist;
     private AccountManager accountManager;
     private ListPopupWindow listPopupWindow;
-    private int type = Constants.TYPES.length - 1;
+    private int type = Constants.TYPE_OUT;
+    private int typeIndex = Constants.TYPES_OUT.length - 1;//收入/支出对应的数组下标
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +45,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         initViews();
         setAdapter();
+
     }
 
     private void initViews() {
         topTitleBar.setTitle_text(getString(R.string.title_record));
-        //topTitleBar.setRight_button_text("统计");
-        topTitleBar.setRight_button_imageId(R.mipmap.statistics);
         topTitleBar.setShow_left_button(false);
+        topTitleBar.setRight_button_imageId(R.mipmap.statistics);
         topTitleBar.setOnRightClickListener(new CustomTitleBar.OnRightClickListener() {
             @Override
             public void onRightClick() {
                 startMyActivity(StatisticsActivity.class);
-            }
-        });
-        topTitleBar.setOnLeftClickListener(new CustomTitleBar.OnLeftClickListener() {
-            @Override
-            public void onLeftClick() {
-
             }
         });
 
@@ -66,7 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         et_money = (EditText) findViewById(R.id.et_money);
         et_remark = (EditText) findViewById(R.id.et_remark);
         tv_save = (TextView) findViewById(R.id.tv_commit);
-        tv_history = (TextView) findViewById(R.id.tv_history);
+        tv_history = (TextView) findViewById(R.id.tv_history_title);
         tv_record_type = (TextView) findViewById(R.id.tv_record_type);
         tv_save.setOnClickListener(this);
         tv_record_type.setOnClickListener(this);
@@ -95,7 +92,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void setAdapter() {
         accountManager = new AccountManager();
-        mlist = accountManager.queryForNum(60);
+        mlist = accountManager.queryForRecentNum(60);
         if (mlist == null)
             mlist = new ArrayList<>();
         adapter = new HistoryAdapter(mlist, this);
@@ -107,6 +104,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         try {
             float money = Float.parseFloat(et_money.getText().toString());
 
+            if (money <= 0) {
+                ToastUtil.showToast(this, getString(R.string.input_error));
+                return;
+            }
             String remark = et_remark.getText().toString();
 
             Calendar ca = Calendar.getInstance();
@@ -122,11 +123,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             account.setDay(day);
             account.setTime(System.currentTimeMillis());
             account.setType(type);
+            account.setTypeIndex(typeIndex);
 
             long rawId = new AccountManager().insert(account);
             if (rawId > 0) {
                 ToastUtil.showToast(this, getString(R.string.save_success));
                 adapter.add(account);
+                et_remark.setText("");
+                et_money.setText("");
             } else {
                 ToastUtil.showToast(this, getString(R.string.save_fail));
             }
@@ -142,11 +146,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tv_commit:
                 hideSoftKeyboard();
-                save();
                 generateData();
+                save();
                 break;
             case R.id.tv_record_type:
 
+                hideSoftKeyboard();
                 showTypePopup(v);
                 break;
             default:
@@ -157,22 +162,58 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void showTypePopup(View view) {
         if (listPopupWindow == null) {
-            List<String> list = new ArrayList<>();
-            for (String s : Constants.TYPES) {
-                list.add(s);
+            List<SectionType> list = new ArrayList<>();
+            for (String s : Constants.TYPES_OUT) {
+                SectionType sectionType = new SectionType(s.equals(Constants.TYPES_OUT[0]), getString(R.string.type_out));
+                Type type = new Type(s, Constants.TYPE_OUT);
+                sectionType.t = type;
+                list.add(sectionType);
             }
-            listPopupWindow = new ListPopupWindow(this, list, new ListPopupWindow.OnPopupItemClickListener() {
+            for (String s : Constants.TYPES_IN) {
+                SectionType sectionType = new SectionType(s.equals(Constants.TYPES_IN[0]), getString(R.string.type_in));
+                Type type = new Type(s, Constants.TYPE_IN);
+                sectionType.t = type;
+                list.add(sectionType);
+            }
+            listPopupWindow = new ListPopupWindow(this, list);
+            listPopupWindow.setOnItemClickListener(new ListPopupWindow.OnPopupItemClickListener() {
                 @Override
-                public void OnItemClick(int position) {
-                    type = position;
-                    tv_record_type.setText(Constants.TYPES[position]);
+                public void OnItemClick(int type, String typeName) {
+                    MainActivity.this.type = type;
+                    typeIndex = getIndexByName(typeName, type);
+                    tv_record_type.setText(typeName);
+                    int color = getResources().getColor(R.color.mainColor1);
+                    if (type == Constants.TYPE_IN)
+                        color = getResources().getColor(R.color.green);
+                    tv_record_type.setTextColor(color);
                 }
+
             });
         }
         //listPopupWindow.showAsDropDown(view);
-        listPopupWindow.showAsDropDown(view, 0, Gravity.CENTER);
+        listPopupWindow.showAsDropDown(view, 50, Gravity.CENTER);
     }
 
+    /**
+     * 根据类别和名称来获取相对应类别数组的下标
+     * Created by ly on 2017/3/24 10:14
+     */
+    private int getIndexByName(String name, int type) {
+        if (type == Constants.TYPE_IN) {
+            for (int i = 0; i < Constants.TYPES_IN.length; i++) {
+                if (Constants.TYPES_IN[i].equals(name)) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = 0; i < Constants.TYPES_OUT.length; i++) {
+                if (Constants.TYPES_OUT[i].equals(name)) {
+                    return i;
+                }
+            }
+        }
+        return 0;
+    }
 
     /**
      * 仅供生成测试数据之用
@@ -181,28 +222,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void generateData() {
         AccountManager accountManager = new AccountManager();
-        for (int year = 2014; year < 2017; year++) {
+        for (int year = 2014; year < 2018; year++) {
             for (int month = 1; month < 13; month++) {
                 for (int day = 1; day < 29; day++) {
-                    Random random = new Random();
-                    int min = 0;
-                    int max = 9;
-                    int t = random.nextInt(max) % (max - min + 1) + min;
+                    for (int count = 0; count < 6; count++) {//每天5条
+                        Random random = new Random();
+                        int min = 1;
+                        int max = 2;
+                        int type = random.nextInt(max) % (max - min + 1) + min;
 
-                    float money = random.nextFloat() * 50 * (year - 2013);
+                        float money = random.nextFloat() * 50 * (year - 2013);
 
-                    Account account = new Account();
-                    account.setMoney(money);
-                    account.setRemark("remark:" + year + "年" + month + "月" + day + "日");
-                    account.setYear(year);
-                    account.setMonth(month);
-                    account.setDay(day);
-                    account.setTime(System.currentTimeMillis());
-                    account.setType(t);
+                        if (type == Constants.TYPE_OUT) {
+                            max = Constants.TYPES_OUT.length - 1;
+                        } else {
+                            max = Constants.TYPES_IN.length - 1;
+                            money = money * 2;//模拟收入大于支出
+                        }
+                        int typeIndex = random.nextInt(max) % (max - min + 1) + min;
 
-                    long insert = accountManager.insert(account);
+                        Account account = new Account();
+                        account.setMoney(money);
+                        account.setRemark("remark:" + year + "年" + month + "月" + day + "日");
+                        account.setYear(year);
+                        account.setMonth(month);
+                        account.setDay(day);
+                        account.setTime(System.currentTimeMillis());
+                        account.setType(type);
+                        account.setTypeIndex(typeIndex);
 
-                    Logger.i("id:" + insert + "  " + year + "年" + month + "月" + day + "日" + " money:" + money);
+                        long insert = accountManager.insert(account);
+
+                        Logger.i("id:" + insert + "  " + year + "年" + month + "月" + day + "日" + " money:" + money);
+                    }
                 }
             }
         }

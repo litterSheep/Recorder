@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 greendao {
-    schemaVersion 16
+    schemaVersion 17
     daoPackage 'com.ly.recorder.db.greendao'
     targetGenDir 'src/main/java'
 }
@@ -14,10 +14,26 @@ android {
         applicationId "com.ly.recorder"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 11
+        versionName "1.1"
         manifestPlaceholders = [APP_CHANNEL_VALUE: "wandoujia"]
+
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
+
+    signingConfigs {
+        release {
+            storeFile file("E:/lyKeyStore")
+            storePassword "ShY273358"
+            keyAlias "recorder"
+            keyPassword "273358"
+            v2SigningEnabled false
+        }
+    }
+
     buildTypes {
         release {
             //混淆
@@ -27,6 +43,7 @@ android {
             //移除无用Resources文件
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     android.applicationVariants.all { variant ->
@@ -36,21 +53,12 @@ android {
                 File outputDirectory = new File(outputFile.parent);
                 def fileName
                 if (variant.buildType.name == "release") {
-                    fileName = "Recorder_${variant.productFlavors[0].name}_v${defaultConfig.versionName}.apk"
+                    fileName = "Recorder_v${defaultConfig.versionName}.apk"
                 } else {
                     fileName = "app_v${defaultConfig.versionName}_degug.apk"
                 }
                 output.outputFile = new File(outputDirectory, fileName)
             }
-        }
-    }
-    productFlavors {
-        wandoujia {
-            applicationId 'com.ly.recorder'
-        }
-        //批量配置
-        productFlavors.all { flavor ->
-            flavor.manifestPlaceholders = [APP_CHANNEL_VALUE: name]
         }
     }
 }
@@ -63,4 +71,9 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.android.support:support-v4:25.1.1'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:recyclerview-v7:25.1.1'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
 }

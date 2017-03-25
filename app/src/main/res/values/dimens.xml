@@ -3,5 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="top_bar_h">45dp</dimen>
     <dimen name="chart_h">240dp</dimen>
+    <dimen name="bar_chart_h">180dp</dimen>
+    <dimen name="line_w">0.8dp</dimen>
 </resources>

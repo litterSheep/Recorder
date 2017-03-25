@@ -2,8 +2,10 @@ package com.ly.recorder.ui;
 
 import android.app.Fragment;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -22,26 +24,29 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
+import com.ly.recorder.utils.PreferencesUtils;
 import com.ly.recorder.utils.TimeUtil;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
+import com.ly.recorder.view.AlertDialogList;
 import com.ly.recorder.view.ChartMarkerView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentMonth extends Fragment implements OnChartValueSelectedListener {
+public class FragmentMonth extends Fragment implements OnChartValueSelectedListener, OnChartGestureListener {
     private final String IS_OPEN_COMPARISON = "isOpenComparison";
     private final String TOTAL_PREVIOUS = "totalPrevious";
     private final String TOTAL_CURRENT = "totalCurrent";
@@ -50,8 +55,11 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     private PieChart mPieChart;
     private int year, month;//选定的月份
     private boolean isOpenComparison = false;//是否开启与上月对比
-    private int totalPrevious, totalCurrent;//上个月总花费和本月总花费
+    private float totalPrevious, totalCurrent;//上个月总支出和本月总支出
     private CheckBox cb_comparison;
+    private Typeface mTfLight;
+    private int selectDay;//在曲线上选择的日期
+    private AlertDialogList alertDialog;
 
     public FragmentMonth() {
         // Required empty public constructor
@@ -71,8 +79,8 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             isOpenComparison = savedInstanceState.getBoolean(IS_OPEN_COMPARISON);
-            totalCurrent = savedInstanceState.getInt(TOTAL_CURRENT);
-            totalPrevious = savedInstanceState.getInt(TOTAL_PREVIOUS);
+            totalCurrent = savedInstanceState.getFloat(TOTAL_CURRENT);
+            totalPrevious = savedInstanceState.getFloat(TOTAL_PREVIOUS);
         }
         View view = inflater.inflate(R.layout.fragment_fragment_month, container, false);
         cb_comparison = (CheckBox) view.findViewById(R.id.cb_comparison);
@@ -84,6 +92,9 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 setLineData();//只有折线图有对比上月
             }
         });
+
+        mTfLight = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
+
         initLineChart(view);
         initPieChart(view);
         setData(year, month);
@@ -94,8 +105,8 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IS_OPEN_COMPARISON, isOpenComparison);
-        outState.putInt(TOTAL_PREVIOUS, totalPrevious);
-        outState.putInt(TOTAL_CURRENT, totalCurrent);
+        outState.putFloat(TOTAL_PREVIOUS, totalPrevious);
+        outState.putFloat(TOTAL_CURRENT, totalCurrent);
         super.onSaveInstanceState(outState);
     }
 
@@ -105,10 +116,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         this.month = month;
     }
 
-    private List<Account> getList(int y, int m) {
+    private List<Account> getList(int type, int y, int m) {
         if (accountManager == null)
             accountManager = new AccountManager();
-        return accountManager.queryForMonth(y, m);
+        return accountManager.queryForMonth(type, y, m);
     }
 
     private void initLineChart(View view) {
@@ -133,12 +144,13 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         xAxis.setAxisLineColor(getResources().getColor(R.color.mainColor));//设置轴线颜色
         xAxis.setAxisLineWidth(1.5f);// 设置轴线宽度
         xAxis.setTextSize(10f);//设置轴标签字体大小
+        xAxis.setTypeface(mTfLight);
         xAxis.setDrawGridLines(false);//设置是否显示网格线
         xAxis.setDrawAxisLine(false);//是否画轴线
         xAxis.setAxisMinimum(1f);
         xAxis.setAxisMaximum(28f);
 
-        //mLineChart.setOnChartGestureListener(this);
+        mLineChart.setOnChartGestureListener(this);
         mLineChart.setOnChartValueSelectedListener(this);
 
         ChartMarkerView mv = new ChartMarkerView(getActivity(), R.layout.custom_marker_view, ChartMarkerView.CHART_MONTH);
@@ -153,7 +165,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         //饼图与文字描述的padding
         mPieChart.setExtraOffsets(5, 10, 50, 5);
 
-        mPieChart.setDragDecelerationFrictionCoef(0.95f);//拖动饼图 松手后滑动的灵敏度
+        mPieChart.setDragDecelerationFrictionCoef(0.85f);//拖动饼图 松手后滑动的灵敏度
 
         mPieChart.setDrawHoleEnabled(true);
         mPieChart.setHoleColor(Color.WHITE);
@@ -175,6 +187,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
 
         // add a selection listener
         mPieChart.setOnChartValueSelectedListener(this);
+        mPieChart.setEntryLabelTypeface(mTfLight);
     }
 
     public void setData(int year, int month) {
@@ -189,8 +202,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     }
 
     private void setLineData() {
+        if (mLineChart == null)
+            return;
         //本月数据
-        List<Entry> entries = getLineEntries(getList(year, month));
+        List<Entry> entries = getLineEntries(getList(Constants.TYPE_OUT, year, month));
         //上月数据
         List<Entry> entriesLastMonth = null;
         if (isOpenComparison) {
@@ -200,7 +215,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 lastMonth = 12;
                 lastMonthY = year - 1;
             }
-            entriesLastMonth = getLineEntries(getList(lastMonthY, lastMonth));
+            entriesLastMonth = getLineEntries(getList(Constants.TYPE_OUT, lastMonthY, lastMonth));
             if (entriesLastMonth == null || entriesLastMonth.size() == 0) {
                 ToastUtil.showToast(getActivity(), getString(R.string.no_last_month_data));
                 cb_comparison.setChecked(false);
@@ -209,9 +224,9 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
             }
         }
 
-        if (entries != null && entries.size() > 0 || entriesLastMonth != null && entriesLastMonth.size() > 0) {
-            String labelCurrent = "共花费：" + totalCurrent + "元";
-            String labelPrevious = "上一月共花费：" + totalPrevious + "元";
+        if (entries.size() > 0 || entriesLastMonth != null && entriesLastMonth.size() > 0) {
+            String labelCurrent = "共支出: " + totalCurrent;
+            String labelPrevious = "上一月共支出: " + totalPrevious;
             //一条线就是一组数据集
             LineDataSet dataSetCurrentMonth, dataSetLastMonth;
             LineData mChartData = mLineChart.getData();
@@ -225,7 +240,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                         dataSetLastMonth = (LineDataSet) mChartData.getDataSetByIndex(1);
                         if (dataSetLastMonth == null) {//还未添加过数据
                             dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
-                            setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_line));
+                            setLineStyle(dataSetLastMonth, Color.GRAY);
 
                             LineData lineData = mLineChart.getLineData();
                             lineData.addDataSet(dataSetLastMonth);
@@ -252,7 +267,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 LineData lineData;
                 if (isOpenComparison && entriesLastMonth != null && entriesLastMonth.size() > 0) {
                     dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
-                    setLineStyle(dataSetLastMonth, getResources().getColor(R.color.gray_text));
+                    setLineStyle(dataSetLastMonth, Color.GRAY);
                     lineData = new LineData(dataSetCurrentMonth, dataSetLastMonth);
                 } else {
                     lineData = new LineData(dataSetCurrentMonth);
@@ -270,20 +285,24 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
 
         // animate calls invalidate()...
         mLineChart.animateX(1200); // 立即执行的动画,x轴
+
+        Legend legend = mLineChart.getLegend();
+        legend.setXEntrySpace(10f);
+        legend.setTypeface(mTfLight);
     }
 
     private void setPieData() {
         if (mPieChart == null)
             return;
 
-        List<PieEntry> entries = getPieEntries(getList(year, month));
+        List<PieEntry> entries = getPieEntries(getList(Constants.TYPE_OUT, year, month));
 
         if (entries.size() > 0) {
 
             PieDataSet dataSet;
             PieData pieData = mPieChart.getData();
 
-            String label = "共花费" + totalCurrent + "元";
+            String label = "共支出" + totalCurrent;
             if (pieData != null && pieData.getDataSetCount() > 0) {
 
                 dataSet = (PieDataSet) pieData.getDataSet();
@@ -349,15 +368,17 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setTypeface(mTfLight);
         l.setDrawInside(false);
         l.setYEntrySpace(3f);//描述文字之间的间隔
         l.setYOffset(8f);//描述文字marginTop
+        l.setFormSize(10f);
 
         // entry label styling
         //在扇形区内隐藏每个类别的描述
         mPieChart.setDrawEntryLabels(false);
         mPieChart.setEntryLabelColor(Color.GRAY);
-        //mPieChart.setEntryLabelTypeface(mTfRegular);
+        mPieChart.setEntryLabelTypeface(mTfLight);
         mPieChart.setEntryLabelTextSize(12f);
     }
 
@@ -367,10 +388,11 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         dataSet.setValueTextColor(Color.BLACK); // styling, ...
         dataSet.setMode(LineDataSet.Mode.LINEAR);
         dataSet.setCircleColor(color);
-        dataSet.setCircleRadius(2f);
+        dataSet.setCircleRadius(3.5f);
         dataSet.setLineWidth(1.8f);
         dataSet.setValueTextSize(8f);
-        dataSet.setHighLightColor(Color.TRANSPARENT);
+        dataSet.setValueTypeface(mTfLight);
+        dataSet.setHighLightColor(getResources().getColor(R.color.mainColor1));
         dataSet.setHighlightEnabled(true);//一定要为true才会显示marker
     }
 
@@ -378,9 +400,9 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         List<Entry> entries = new ArrayList<>();
         if (list == null || list.size() == 0)
             return entries;
-        //key:日期，value:该日对应的总花费
+        //key:日期，value:该日对应的总支出
         Map<Integer, Float> temp = new HashMap<>();
-        int total = 0;
+        float total = 0;
         for (Account account : list) {
             Integer day = account.getDay();
             Float money = account.getMoney();
@@ -390,19 +412,18 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
             }
             temp.put(day, money);
         }
-
-        //这个月最后一天(X轴展示的日期)
-        int lastDay = TimeUtil.getLastDayOfMonth(year, month) + 1;
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH) + 1;
-        if (currentYear == year && currentMonth == month) {//选定的月份就是本月
-            lastDay = list.get(list.size() - 1).getDay() + 1;
+        //X轴展示的开始日期
+        int startDay = 1;
+        //这个月最后一天(X轴展示的结束日期)
+        int lastDay = TimeUtil.getLastDayOfMonth(year, month);
+        if (TimeUtil.isCurrentMonth(year, month)) {//选定的月份就是本月
+            startDay = list.get(0).getDay();
+            lastDay = list.get(list.size() - 1).getDay();
         }
-        for (int i = 1; i < lastDay; i++) {
+        for (int i = startDay; i < lastDay + 1; i++) {
             Float money = temp.get(i);
             if (money == null)
-                money = 0f;//如果没有则表示这一天花费为0
+                money = 0f;//如果没有则表示这一天支出为0
             entries.add(new Entry(i, money));
         }
 
@@ -420,23 +441,23 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         List<PieEntry> entries = new ArrayList<>();
         if (list == null || list.size() == 0)
             return entries;
-        //key:type  value:该类型对应的总花费
+        //key:type  value:该类型对应的总支出
         Map<Integer, Float> types = new HashMap<>();
         for (Account account : list) {
             Float money = account.getMoney();
 
-            Integer type = account.getType();
-            if (type == null)
-                type = Constants.TYPES.length - 1;//设置为默认值
-            if (types.containsKey(type)) {
-                money += types.get(type);
+            Integer typeIndex = account.getTypeIndex();
+            if (typeIndex == null)
+                typeIndex = Constants.TYPES_OUT.length - 1;//设置为默认值
+            if (types.containsKey(typeIndex)) {
+                money += types.get(typeIndex);
             }
-            types.put(type, money);
+            types.put(typeIndex, money);
         }
 
-        for (Integer type : types.keySet()) {
-            float money = types.get(type);
-            entries.add(new PieEntry(money, Constants.TYPES[type] + money + "元"));
+        for (Integer typeIndex : types.keySet()) {
+            float money = types.get(typeIndex);
+            entries.add(new PieEntry(money, Constants.TYPES_OUT[typeIndex] + money));
         }
         //按类别金额从降序排列
         Collections.sort(entries, new Comparator<PieEntry>() {
@@ -453,10 +474,73 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
     @Override
     public void onValueSelected(Entry e, Highlight h) {
 
+        selectDay = (int) e.getX();
+        boolean isShow = PreferencesUtils.getBoolean(getActivity(), Constants.PREFERENCES_FLAG_DIALOG);
+        if (!isShow) {
+            ToastUtil.showToast(getActivity(), getString(R.string.long_click_show_dialog));
+            PreferencesUtils.putBoolean(getActivity(), Constants.PREFERENCES_FLAG_DIALOG, !isShow);
+        }
     }
 
     @Override
     public void onNothingSelected() {
-
+        Logger.i("onNothingSelected");
+        selectDay = 0;
     }
+
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+        if (selectDay > 0) {
+            List<Account> list = accountManager.queryForDay(Constants.TYPE_OUT, year, month, selectDay);
+            String title = year + "年" + month + "月" + selectDay + "日 支出";
+            if (alertDialog == null) {
+
+                alertDialog = new AlertDialogList(getActivity(), title, list);
+            } else {
+                alertDialog.reSetData(title, list);
+            }
+        }
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+        Logger.i("Gesture START, x: " + me.getX() + ", y: " + me.getY());
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+        Logger.i("Gesture END, lastGesture: " + lastPerformedGesture);
+
+//        // un-highlight values after the gesture is finished and no single-tap
+//        if (lastPerformedGesture != ChartTouchListener.ChartGesture.SINGLE_TAP)
+//            mLineChart.highlightValues(null); // or highlightTouch(null) for callback to onNothingSelected(...)
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+        Logger.i("Chart double-tapped.");
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+        Logger.i("Chart single-tapped.");
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+        Logger.i("Chart flinged. VeloX: " + velocityX + ", VeloY: " + velocityY);
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+        Logger.i("Scale / Zoom ScaleX: " + scaleX + ", ScaleY: " + scaleY);
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+        Logger.i("Translate / Move dX: " + dX + ", dY: " + dY);
+    }
+
 }

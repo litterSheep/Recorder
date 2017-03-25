@@ -22,7 +22,7 @@ public class CustomTitleBar extends LinearLayout {
     /**
      * 顶部左右图标的大小（会根据dp换算）
      */
-    private static final int ICON_SIZE = 20;
+    private static final int ICON_SIZE = 24;
     /**
      * 顶部图标左/右的padding（会根据dp换算）
      */
@@ -117,7 +117,7 @@ public class CustomTitleBar extends LinearLayout {
         title = (TextView) findViewById(R.id.title);
 
         /**标题相关*/
-        title_background_color = 0xff00B1ED;
+        title_background_color = context.getResources().getColor(R.color.mainColor);
         title_textColor = Color.WHITE;
         title_textSize = 18;
         /**返回按钮相关*/

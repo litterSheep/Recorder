@@ -2,7 +2,6 @@ package com.ly.recorder.utils;
 
 import android.content.Context;
 import android.os.Debug;
-import android.os.Environment;
 import android.os.Process;
 
 import com.ly.recorder.Constants;
@@ -28,26 +27,22 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     public static final String TAG = "CrashHandler";
     public static final boolean CONFIG_CRASH_HANDLER_DEBUG = false;
-
+    /**
+     * 错误报告文件的扩展名
+     */
+    private static final String CRASH_REPORTER_EXTENSION = ".log";
+    /**
+     * CrashHandler实例
+     */
+    private static CrashHandler INSTANCE;
     /**
      * 系统默认的UncaughtException处理类
      */
     private UncaughtExceptionHandler mDefaultHandler;
     /**
-     * CrashHandler实例
-     */
-    private static CrashHandler INSTANCE;
-
-    /**
      * 使用Properties来保存设备的信息和错误堆栈信息
      */
     private Properties mDeviceCrashInfo = new Properties();
-
-    /**
-     * 错误报告文件的扩展名
-     */
-    private static final String CRASH_REPORTER_EXTENSION = ".log";
-
     private Context ctx;
 
     /**
@@ -179,7 +174,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         // 如果是OOM错误，则保存崩溃时的内存快照，供分析使用
         if (isOOM(ex)) {
             try {
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + ctx.getPackageName() + "_log/";
+                String path = Constants.CRASH_PATH + File.separator;
                 String fileName = path + "crash-" + TimeUtil.getCurrentTime("yyyy-MM-dd HH-mm-ss") + ".hprof";
                 Debug.dumpHprofData(fileName);
             } catch (IOException e) {

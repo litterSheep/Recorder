@@ -75,11 +75,26 @@ public class HistoryAdapter extends BaseAdapter {
 
         viewHolder.tv_time.setText(TimeUtil.formatTimestamp(account.getTime()));
         String type;
-        if (account.getType() == null) {
-            type = "空类型";
+        int color;
+        Integer typeIndex = account.getTypeIndex();
+        if (account.getType() != null && typeIndex != null) {
+
+            if (account.getType() == Constants.TYPE_OUT) {//支出
+                type = Constants.TYPES_OUT[typeIndex];
+                color = context.getResources().getColor(R.color.mainColor1);
+            } else {//收入
+                type = Constants.TYPES_IN[typeIndex];
+                color = context.getResources().getColor(R.color.green);
+            }
         } else {
-            type = Constants.TYPES[account.getType()];
+            type = "空类型";
+            color = context.getResources().getColor(R.color.gray_text);
         }
+        viewHolder.tv_item_type.setTextColor(color);
+        viewHolder.tv_money.setTextColor(color);
+        viewHolder.tv_remark.setTextColor(color);
+        viewHolder.tv_time.setTextColor(color);
+
         viewHolder.tv_item_type.setText(type);
         viewHolder.tv_money.setText(account.getMoney() + "");
         if (TextUtils.isEmpty(account.getRemark())) {

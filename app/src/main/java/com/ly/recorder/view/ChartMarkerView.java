@@ -11,7 +11,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 import com.ly.recorder.R;
-import com.ly.recorder.utils.logger.Logger;
 
 public class ChartMarkerView extends MarkerView {
 
@@ -34,7 +33,6 @@ public class ChartMarkerView extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
-        Logger.d("refreshContent------------------");
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;

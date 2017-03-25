@@ -4,24 +4,30 @@
     <string name="title_record">记账</string>
     <string name="title_statistics">统计</string>
 
+    <string name="type_in">收入</string>
+    <string name="type_out">支出</string>
+    <string name="jieyu">结余</string>
+
     <string name="record_num">金额</string>
     <string name="record_type">选择类别</string>
     <string name="record_commit">入 账</string>
     <string name="record_remark">输入备注信息...</string>
     <string name="save_success">保存成功</string>
     <string name="save_fail">保存失败</string>
-    <string name="empty_hint">一分钱都没用，就不记录了吧~~</string>
+    <string name="empty_hint">金额必须填写~~</string>
+    <string name="input_error">请填大于0的数字</string>
     <string name="show_no_data">什么也没有，先去入账吧...</string>
     <string name="comparison_month">对比上月</string>
-    <string name="comparison_year">对比去年</string>
     <string name="no_last_month_data">没有上月的数据</string>
     <string name="click_title_hint">点击标题可以快速切换到今天哦~</string>
+    <string name="long_click_show_dialog">继续长按图表可以显示该日的列表哦~</string>
+    <string name="long_click_show_bar">继续长按图表可以显示该月的收支结余情况哦~</string>
     <string name="delete_dialog_title">删除一条记录</string>
     <string name="delete">删除</string>
     <string name="cancel">取消</string>
     <string name="history">-- 历史入账 --</string>
     <string name="day_history">-- 今日账单 --</string>
-    <string name="no_day_history">-- 今日没有支出 --</string>
+    <string name="no_day_history">-- 没有查询到对应的数据 --</string>
     <string name="no_history">-- 暂无历史入账 --</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -9,9 +9,9 @@ import android.widget.RadioGroup;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
-import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.utils.PreferencesUtils;
+import com.ly.recorder.utils.TimeUtil;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.view.CustomTitleBar;
 
@@ -35,8 +35,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
     private List<Fragment> fragments;
     private FragmentDay fragmentDay;
     private FragmentMonth fragmentMonth;
-
-    private FragmentYear fragmentYear;
+    private FragmentTogether fragmentTogether;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +57,19 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
             fragmentMonth = (FragmentMonth) getFragmentManager().findFragmentByTag(FragmentMonth.class.getName());
             if (fragmentMonth == null)
                 fragmentMonth = FragmentMonth.newInstance();
-            fragmentYear = (FragmentYear) getFragmentManager().findFragmentByTag(FragmentYear.class.getName());
-            if (fragmentYear == null)
-                fragmentYear = FragmentYear.newInstance();
+            fragmentTogether = (FragmentTogether) getFragmentManager().findFragmentByTag(FragmentTogether.class.getName());
+            if (fragmentTogether == null)
+                fragmentTogether = FragmentTogether.newInstance();
         } else {
             fragmentDay = FragmentDay.newInstance();
             fragmentMonth = FragmentMonth.newInstance();
-            fragmentYear = FragmentYear.newInstance();
+            fragmentTogether = FragmentTogether.newInstance();
 
 
 //            getFragmentManager().beginTransaction()
 //                    .add(R.id.contentContainer, fragmentDay, FragmentDay.class.getName())
 //                    .add(R.id.contentContainer, fragmentMonth, FragmentMonth.class.getName())
-//                    .add(R.id.contentContainer, fragmentYear, FragmentYear.class.getName())
+//                    .add(R.id.contentContainer, fragmentTogether, FragmentTogether.class.getName())
 //                    .commit();
         }
         initDatePicker();
@@ -92,7 +91,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
         topTitleBar.setOnTitleClickListener(new CustomTitleBar.OnTitleClickListener() {
             @Override
             public void onTitleClick() {
-                queryData(currentYear, currentMonth, currentDay);
+                refreshData(currentYear, currentMonth, currentDay);
             }
         });
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.rbt_container);
@@ -157,17 +156,17 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
 
         fragments.add(fragmentDay);
         fragments.add(fragmentMonth);
-        fragments.add(fragmentYear);
+        fragments.add(fragmentTogether);
 
         //初始化fragment中的数据
         if (selectedYear == 0) {
-            fragmentDay.initData(accountManager.queryForDay(currentYear, currentMonth, currentDay));
+            fragmentDay.initData(accountManager, currentYear, currentMonth, currentDay);
             fragmentMonth.initData(accountManager, currentYear, currentMonth);
-            fragmentYear.initData(accountManager, currentYear);
+            fragmentTogether.initData(accountManager, currentYear);
         } else {
-            fragmentDay.initData(accountManager.queryForDay(selectedYear, selectedMonth, selectedDay));
+            fragmentDay.initData(accountManager, selectedYear, selectedMonth, selectedDay);
             fragmentMonth.initData(accountManager, selectedYear, selectedMonth);
-            fragmentYear.initData(accountManager, selectedYear);
+            fragmentTogether.initData(accountManager, selectedYear);
         }
     }
 
@@ -187,7 +186,7 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
             } else if (fragment instanceof FragmentMonth) {
                 ft.add(R.id.contentContainer, fragment, FragmentMonth.class.getName());
             } else {
-                ft.add(R.id.contentContainer, fragment, FragmentYear.class.getName());
+                ft.add(R.id.contentContainer, fragment, FragmentTogether.class.getName());
             }
         } else {//显示之前隐藏的fragment
             ft.show(fragment);
@@ -204,25 +203,28 @@ public class StatisticsActivity extends BaseActivity implements DatePickerDialog
         selectedMonth = month + 1;//calendar中月份是从0开始，所以+1
         selectedDay = day;
 
-        queryData(selectedYear, selectedMonth, selectedDay);
+        refreshData(selectedYear, selectedMonth, selectedDay);
 
-        boolean isUnShow = PreferencesUtils.getBoolean(this, Constants.PREFRENCES_FLAG);
-        if (!isUnShow) {
+        boolean isShow = PreferencesUtils.getBoolean(this, Constants.PREFERENCES_FLAG);
+        if (!isShow) {
             ToastUtil.showToast(this, getString(R.string.click_title_hint));
-            PreferencesUtils.putBoolean(this, Constants.PREFRENCES_FLAG, !isUnShow);
+            PreferencesUtils.putBoolean(this, Constants.PREFERENCES_FLAG, !isShow);
         }
     }
 
-    private void queryData(int year, int month, int day) {
+    private void refreshData(int year, int month, int day) {
         topTitleBar.setNullRightButtonImage();
-        topTitleBar.setRight_button_text(year + "-" + month + "-" + day);
+        String title;
+        if (TimeUtil.isCurrentDay(year, month, day)) {
+            title = "今天";
+        } else {
+            title = year + "-" + month + "-" + day;
+        }
+        topTitleBar.setRight_button_text(title);
 
-        List<Account> accountsYear = accountManager.queryForYear(year);
-        List<Account> accountsDay = accountManager.queryForDay(year, month, day);
-
-        fragmentDay.setData(accountsDay);
+        fragmentDay.setData(year, month, day);
         fragmentMonth.setData(year, month);
-        fragmentYear.setData(year);
+        fragmentTogether.setData(year);
 
     }
 

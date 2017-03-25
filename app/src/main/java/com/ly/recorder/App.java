@@ -6,9 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ly.recorder.db.MigrationHelper;
 import com.ly.recorder.db.greendao.DaoMaster;
 import com.ly.recorder.db.greendao.DaoSession;
+import com.ly.recorder.utils.AppUtil;
 import com.ly.recorder.utils.CrashHandler;
 import com.ly.recorder.utils.logger.LogLevel;
 import com.ly.recorder.utils.logger.Logger;
+import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * Created by ly on 2017/3/2 14:41.
@@ -22,10 +24,16 @@ public class App extends Application {
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
 
+    public static App getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        CrashReport.initCrashReport(getApplicationContext());
 
         CrashHandler.getInstance().init(getApplicationContext());
 
@@ -34,11 +42,19 @@ public class App extends Application {
                 //.hideThreadInfo()
                 .methodCount(3);
 
-        setDatabase();
-    }
+        // 获取当前包名
+        String packageName = getPackageName();
+        // 获取当前进程名
+        String processName = AppUtil.getProcessName(android.os.Process.myPid());
+        // 设置是否为上报进程
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+        // 初始化Bugly
+        CrashReport.initCrashReport(this, "c65aa5b316", true, strategy);
+        // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
+        // CrashReport.initCrashReport(context, strategy);
 
-    public static App getInstance() {
-        return instance;
+        setDatabase();
     }
 
     /**

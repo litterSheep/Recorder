@@ -53,22 +53,16 @@
             android:button="@null"
             android:gravity="center"
             android:padding="5dp"
-            android:text="年"
+            android:text="收支"
             android:textColor="@drawable/text_blue" />
 
     </RadioGroup>
 
 
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:overScrollMode="never">
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
 
-        <FrameLayout
-            android:id="@+id/contentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"></FrameLayout>
-    </ScrollView>
 </LinearLayout>

@@ -275,4 +275,24 @@ public class TimeUtil {
         //获取某月最大天数
         return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    public static boolean isCurrentYear(int year) {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.YEAR) == year;
+    }
+
+    public static boolean isCurrentMonth(int year, int month) {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        return currentYear == year && currentMonth == month;
+    }
+
+    public static boolean isCurrentDay(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        return currentYear == year && currentMonth == month && currentDay == day;
+    }
 }

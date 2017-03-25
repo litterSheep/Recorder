@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><!-- "更多"popupwindow 的item -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_item_type"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <View
+        android:id="@+id/item_vertical_line"
+        android:layout_width="2dp"
+        android:layout_height="13dp"
+        android:layout_centerVertical="true"
+        android:background="@color/mainColor" />
+
+    <TextView
+        android:id="@+id/tv_pop_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:gravity="center"
+        android:text="全部" />
+</RelativeLayout>
