@@ -14,7 +14,7 @@ public class Constants {
 
     public static final int TYPE_IN = 1;//收入
     public static final int TYPE_OUT = 2;//支出
-    public static final String[] TYPES_OUT = {"支出", "饭菜", "烟酒", "零食", "娱乐", "话费", "交通", "衣服", "房租", "水电", "其他支出"};
+    public static final String[] TYPES_OUT = {"支出", "饭菜", "烟酒", "零食", "娱乐", "话费", "红包","网购","交通", "衣服", "房租", "水电", "其他支出"};
     public static final String[] TYPES_IN = {"收入", "工资", "红包", "投资", "人情", "其他收入"};
 
 

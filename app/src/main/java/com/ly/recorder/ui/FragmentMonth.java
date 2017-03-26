@@ -388,7 +388,7 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         dataSet.setValueTextColor(Color.BLACK); // styling, ...
         dataSet.setMode(LineDataSet.Mode.LINEAR);
         dataSet.setCircleColor(color);
-        dataSet.setCircleRadius(3.5f);
+        dataSet.setCircleRadius(3f);
         dataSet.setLineWidth(1.8f);
         dataSet.setValueTextSize(8f);
         dataSet.setValueTypeface(mTfLight);

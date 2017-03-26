@@ -2,14 +2,18 @@ package com.ly.recorder;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import com.ly.recorder.db.MigrationHelper;
 import com.ly.recorder.db.greendao.DaoMaster;
 import com.ly.recorder.db.greendao.DaoSession;
+import com.ly.recorder.ui.MainActivity;
 import com.ly.recorder.utils.AppUtil;
 import com.ly.recorder.utils.CrashHandler;
 import com.ly.recorder.utils.logger.LogLevel;
 import com.ly.recorder.utils.logger.Logger;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -33,7 +37,6 @@ public class App extends Application {
         super.onCreate();
         instance = this;
 
-        CrashReport.initCrashReport(getApplicationContext());
 
         CrashHandler.getInstance().init(getApplicationContext());
 
@@ -42,6 +45,12 @@ public class App extends Application {
                 //.hideThreadInfo()
                 .methodCount(3);
 
+        setDatabase();
+
+        initBugly();
+    }
+
+    private void initBugly(){
         // 获取当前包名
         String packageName = getPackageName();
         // 获取当前进程名
@@ -50,11 +59,16 @@ public class App extends Application {
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
         // 初始化Bugly
-        CrashReport.initCrashReport(this, "c65aa5b316", true, strategy);
+        //CrashReport.initCrashReport(this, "c65aa5b316", true, strategy);
         // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
         // CrashReport.initCrashReport(context, strategy);
+        strategy.setAppReportDelay(2000);
 
-        setDatabase();
+        Beta.canShowUpgradeActs.add(MainActivity.class);
+        Beta.initDelay = 2000;
+        //Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        Bugly.init(getApplicationContext(), "c65aa5b316", BuildConfig.DEBUG,strategy);
     }
 
     /**

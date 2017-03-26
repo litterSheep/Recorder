@@ -86,7 +86,7 @@ public class FragmentDay extends Fragment {
         initPieChart(view);
         setData(year, month, day);
 
-        int a = 5 / 0;
+        //int a = 5 / 0;
         return view;
     }
 

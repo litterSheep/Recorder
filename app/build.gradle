@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'bugly'
 
+bugly {
+    appId = 'c65aa5b316' // 注册时分配的App ID
+    appKey = '75489ad5-27ab-48b0-93d7-a38ce6a49e0a' // 注册时分配的App Key
+}
 greendao {
     schemaVersion 17
     daoPackage 'com.ly.recorder.db.greendao'
@@ -11,11 +16,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.ly.recorder"
+        applicationId "com.ly.recorderMaster"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 11
-        versionName "1.1"
+        versionCode 10
+        versionName "2.0"
         manifestPlaceholders = [APP_CHANNEL_VALUE: "wandoujia"]
 
         ndk {
@@ -23,7 +28,6 @@ android {
             abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
-
     signingConfigs {
         release {
             storeFile file("E:/lyKeyStore")
@@ -33,7 +37,6 @@ android {
             v2SigningEnabled false
         }
     }
-
     buildTypes {
         release {
             //混淆
@@ -53,13 +56,18 @@ android {
                 File outputDirectory = new File(outputFile.parent);
                 def fileName
                 if (variant.buildType.name == "release") {
-                    fileName = "Recorder_v${defaultConfig.versionName}.apk"
+                    fileName = "Recorder_${variant.productFlavors[0].name}_v${defaultConfig.versionName}.apk"
                 } else {
                     fileName = "app_v${defaultConfig.versionName}_degug.apk"
                 }
                 output.outputFile = new File(outputDirectory, fileName)
             }
         }
+    }
+    productFlavors {
+        yingyongbao {}
+        baidu {}
+        wandoujia {}
     }
 }
 
@@ -74,6 +82,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
-    compile 'com.tencent.bugly:crashreport:latest.release'
+    //compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:crashreport_upgrade:1.2.4'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
 }

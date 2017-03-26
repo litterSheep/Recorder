@@ -33,7 +33,7 @@ public class AlertDialogList extends AlertDialog {
         tv_title = (TextView) v.findViewById(R.id.tv_history_title);
         ListView listView = (ListView) v.findViewById(R.id.lv_history);
         tv_title.setText(title);
-        tv_title.setTextSize(PixelUtil.sp2px(context, 10));
+        tv_title.setTextSize(PixelUtil.sp2px(context, 8));
         historyAdapter = new HistoryAdapter(list, context);
         listView.setAdapter(historyAdapter);
 
