@@ -195,7 +195,7 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         //该年结余list
         List<Entry> entriesJieYu = getJieYuEntries(entriesOut, entriesIn);
 
-        if (entriesOut.size() > 0 && entriesIn.size() > 0 && entriesJieYu.size() > 0) {
+        if (entriesOut.size() > 0 || entriesIn.size() > 0) {
             String labelOut = "共支出: " + totalOut;
             String labelIn = "共收入: " + totalIn;
             String labelJieYu = "结余: " + (totalIn - totalOut);
@@ -205,31 +205,47 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
             LineData mChartData = mLineChart.getData();
             if (mChartData != null && mChartData.getDataSetCount() > 0) {
                 dataSetOut = (LineDataSet) mChartData.getDataSetByIndex(0);
-                dataSetOut.setValues(entriesOut);
-                dataSetOut.setLabel(labelOut);
-
+                if (dataSetOut != null && entriesOut.size() > 0) {
+                    dataSetOut.setValues(entriesOut);
+                    dataSetOut.setLabel(labelOut);
+                }
                 dataSetIn = (LineDataSet) mChartData.getDataSetByIndex(1);
-                dataSetIn.setValues(entriesIn);
-                dataSetIn.setLabel(labelIn);
-
+                if (dataSetIn != null && entriesIn.size() > 0) {
+                    dataSetIn.setValues(entriesIn);
+                    dataSetIn.setLabel(labelIn);
+                }
                 dataSetJieYu = (LineDataSet) mChartData.getDataSetByIndex(2);
-                dataSetJieYu.setValues(entriesJieYu);
-                dataSetJieYu.setLabel(labelJieYu);
-
-
+                if (dataSetJieYu != null && entriesJieYu.size() > 0) {
+                    dataSetJieYu.setValues(entriesJieYu);
+                    dataSetJieYu.setLabel(labelJieYu);
+                }
                 mChartData.notifyDataChanged();
                 mLineChart.notifyDataSetChanged();
+
             } else {
 
-                dataSetOut = new LineDataSet(entriesOut, labelOut);
-                dataSetIn = new LineDataSet(entriesIn, labelIn);
                 dataSetJieYu = new LineDataSet(entriesJieYu, labelJieYu);
-
-                setLineStyle(dataSetOut, getResources().getColor(R.color.red1));
-                setLineStyle(dataSetIn, getResources().getColor(R.color.green));
                 setLineStyle(dataSetJieYu, getResources().getColor(R.color.mainColor));
+                LineData lineData;
 
-                LineData lineData = new LineData(dataSetOut, dataSetIn, dataSetJieYu);
+                if (entriesOut.size() > 0) {
+                    if (entriesIn.size() > 0) {
+                        dataSetOut = new LineDataSet(entriesOut, labelOut);
+                        dataSetIn = new LineDataSet(entriesIn, labelOut);
+                        setLineStyle(dataSetOut, getResources().getColor(R.color.red1));
+                        setLineStyle(dataSetIn, getResources().getColor(R.color.green));
+                        lineData = new LineData(dataSetOut, dataSetIn, dataSetJieYu);
+                    } else {
+                        dataSetOut = new LineDataSet(entriesOut, labelOut);
+                        setLineStyle(dataSetOut, getResources().getColor(R.color.red1));
+                        lineData = new LineData(dataSetOut, dataSetJieYu);
+                    }
+                } else {//否则就是 entriesIn > 0
+                    dataSetIn = new LineDataSet(entriesIn, labelOut);
+                    setLineStyle(dataSetIn, getResources().getColor(R.color.green));
+                    lineData = new LineData(dataSetIn, dataSetJieYu);
+                }
+
                 mLineChart.setData(lineData);
             }
         } else {
@@ -350,13 +366,15 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
             temp.put(month, money);
         }
 
-        int startMonth = 1;
+        int startMonth;
         //这个年最后一月(X轴展示的月份)
-        int lastMonth = 12;
-        if (TimeUtil.isCurrentYear(year)) {//选定的年份就是本年
-            lastMonth = list.get(list.size() - 1).getMonth();
-            startMonth = list.get(0).getMonth();
-        }
+        int lastMonth;
+        startMonth = list.get(0).getMonth();
+        lastMonth = list.get(list.size() - 1).getMonth();
+        if (startMonth < 1 || startMonth > 12)
+            startMonth = 1;
+        if (lastMonth < 1 || startMonth > 12)
+            lastMonth = 12;
         for (int i = startMonth; i < lastMonth + 1; i++) {
             Float money = temp.get(i);
             if (money == null)
@@ -380,11 +398,22 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
             return list;
         int start = 1;
         int end = 12;
-        if (TimeUtil.isCurrentYear(year) && outs.size() > 0 && ins.size() > 0) {
-            //在两个数组里取最小的月份
-            start = (int) (outs.get(0).getX() < ins.get(0).getX() ? outs.get(0).getX() : ins.get(0).getX());
-            //取最大的月份
-            end = (int) (outs.get(outs.size() - 1).getX() > ins.get(ins.size() - 1).getX() ? outs.get(outs.size() - 1).getX() : ins.get(ins.size() - 1).getX());
+        if (TimeUtil.isCurrentYear(year)) {
+
+            if (outs.size() > 0) {
+                start = (int) outs.get(0).getX();
+                end = (int) outs.get(outs.size() - 1).getX();
+            }
+            if (ins.size() > 0) {
+                start = (int) ins.get(0).getX();
+                end = (int) ins.get(ins.size() - 1).getX();
+            }
+            if (outs.size() > 0 && ins.size() > 0) {
+                //在两个数组里取最小的月份
+                start = (int) (outs.get(0).getX() < ins.get(0).getX() ? outs.get(0).getX() : ins.get(0).getX());
+                //取最大的月份
+                end = (int) (outs.get(outs.size() - 1).getX() > ins.get(ins.size() - 1).getX() ? outs.get(outs.size() - 1).getX() : ins.get(ins.size() - 1).getX());
+            }
         }
         for (int i = start; i < end + 1; i++) {//遍历这一年的每一月
             float out = 0, in = 0;//该月对应的收支

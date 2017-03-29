@@ -148,7 +148,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         xAxis.setDrawGridLines(false);//设置是否显示网格线
         xAxis.setDrawAxisLine(false);//是否画轴线
         xAxis.setAxisMinimum(1f);
-        xAxis.setAxisMaximum(28f);
+        float lastDayOfMonth = TimeUtil.getLastDayOfMonth(year, month);
+        if (lastDayOfMonth < 1 || lastDayOfMonth > 31)
+            lastDayOfMonth = 31;
+        xAxis.setAxisMaximum(lastDayOfMonth);
 
         mLineChart.setOnChartGestureListener(this);
         mLineChart.setOnChartValueSelectedListener(this);
@@ -233,8 +236,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
             if (mChartData != null && mChartData.getDataSetCount() > 0) {
                 dataSetCurrentMonth = (LineDataSet) mChartData.getDataSetByIndex(0);
                 //setLineStyle(dataSetCurrentMonth,getResources().getColor(R.color.mainColor));
-                dataSetCurrentMonth.setValues(entries);
-                dataSetCurrentMonth.setLabel(labelCurrent);
+                if (dataSetCurrentMonth != null && entries.size() > 0) {
+                    dataSetCurrentMonth.setValues(entries);
+                    dataSetCurrentMonth.setLabel(labelCurrent);
+                }
                 if (isOpenComparison) {
                     if (entriesLastMonth != null && entriesLastMonth.size() > 0) {
                         dataSetLastMonth = (LineDataSet) mChartData.getDataSetByIndex(1);
@@ -260,18 +265,26 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
                 mLineChart.notifyDataSetChanged();
             } else {
 
-                dataSetCurrentMonth = new LineDataSet(entries, labelCurrent); // add entries to dataset
+                LineData lineData = null;
 
-                setLineStyle(dataSetCurrentMonth, getResources().getColor(R.color.mainColor));
-
-                LineData lineData;
-                if (isOpenComparison && entriesLastMonth != null && entriesLastMonth.size() > 0) {
-                    dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
-                    setLineStyle(dataSetLastMonth, Color.GRAY);
-                    lineData = new LineData(dataSetCurrentMonth, dataSetLastMonth);
+                if (entries.size() > 0) {
+                    dataSetCurrentMonth = new LineDataSet(entries, labelCurrent);
+                    setLineStyle(dataSetCurrentMonth, getResources().getColor(R.color.mainColor));
+                    if (isOpenComparison && entriesLastMonth != null && entriesLastMonth.size() > 0) {
+                        dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
+                        setLineStyle(dataSetLastMonth, Color.GRAY);
+                        lineData = new LineData(dataSetCurrentMonth, dataSetLastMonth);
+                    } else {
+                        lineData = new LineData(dataSetCurrentMonth);
+                    }
                 } else {
-                    lineData = new LineData(dataSetCurrentMonth);
+                    if (isOpenComparison && entriesLastMonth != null && entriesLastMonth.size() > 0) {
+                        dataSetLastMonth = new LineDataSet(entriesLastMonth, labelPrevious);
+                        setLineStyle(dataSetLastMonth, Color.GRAY);
+                        lineData = new LineData(dataSetLastMonth);
+                    }
                 }
+
                 mLineChart.setData(lineData);
             }
         } else {
@@ -413,13 +426,15 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
             temp.put(day, money);
         }
         //X轴展示的开始日期
-        int startDay = 1;
+        int startDay;
         //这个月最后一天(X轴展示的结束日期)
-        int lastDay = TimeUtil.getLastDayOfMonth(year, month);
-        if (TimeUtil.isCurrentMonth(year, month)) {//选定的月份就是本月
-            startDay = list.get(0).getDay();
-            lastDay = list.get(list.size() - 1).getDay();
-        }
+        int lastDay;
+        startDay = list.get(0).getDay();
+        lastDay = list.get(list.size() - 1).getDay();
+        if (startDay < 1 || startDay > 31)
+            startDay = 1;
+        if (lastDay < 1 || lastDay > 31)
+            lastDay = TimeUtil.getLastDayOfMonth(year, month);
         for (int i = startDay; i < lastDay + 1; i++) {
             Float money = temp.get(i);
             if (money == null)

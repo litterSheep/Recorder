@@ -265,7 +265,7 @@ public class TimeUtil {
     public static int getLastDayOfMonth(int year, int month) {
         if (year < 1970 || month > 12 || month < 1) {
             Logger.w("getLastDayOfMonth 月份格式不对...");
-            return 30;
+            return 31;
         }
         Calendar cal = Calendar.getInstance();
         //设置年份

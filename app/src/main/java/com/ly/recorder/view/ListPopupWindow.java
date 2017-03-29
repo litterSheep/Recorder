@@ -15,6 +15,7 @@ import com.ly.recorder.adapter.TypeSectionAdapter;
 import com.ly.recorder.entity.SectionType;
 import com.ly.recorder.entity.Type;
 import com.ly.recorder.utils.PixelUtil;
+import com.ly.recorder.utils.ScreenUtil;
 
 import java.util.List;
 
@@ -53,8 +54,8 @@ public class ListPopupWindow extends PopupWindow {
         });
         recyclerview.setAdapter(typeAdapter);
 
-        this.setHeight(PixelUtil.dp2px(mContext, 160));
-        this.setWidth(PixelUtil.dp2px(mContext, 250));
+        this.setHeight(PixelUtil.dp2px(mContext, 300));
+        this.setWidth(ScreenUtil.getScreenWidth(context) * 3 / 4);
         this.setFocusable(false);
         this.setOutsideTouchable(true);//点击外部消失
         //防止虚拟软键盘被弹出菜单遮住

@@ -216,7 +216,7 @@ public class FragmentDay extends Fragment {
                 tv_history.setText(year + "年" + month + "月" + day + "日 账单");
             }
         }
-
+        sv.scrollTo(0, 0);
     }
 
     public void setData(int year, int month, int day) {

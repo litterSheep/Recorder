@@ -3,7 +3,6 @@ package com.ly.recorder.ui;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -146,7 +145,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tv_commit:
                 hideSoftKeyboard();
-                generateData();
+                //generateData();
                 save();
                 break;
             case R.id.tv_record_type:
@@ -191,7 +190,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             });
         }
         //listPopupWindow.showAsDropDown(view);
-        listPopupWindow.showAsDropDown(view, 50, Gravity.CENTER);
+        listPopupWindow.showAsDropDown(view, 0, 0);
     }
 
     /**
@@ -225,7 +224,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         for (int year = 2014; year < 2018; year++) {
             for (int month = 1; month < 13; month++) {
                 for (int day = 1; day < 29; day++) {
-                    for (int count = 0; count < 6; count++) {//每天5条
+                    for (int count = 0; count < 5; count++) {//每天5条
                         Random random = new Random();
                         int min = 1;
                         int max = 2;

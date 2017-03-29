@@ -46,11 +46,11 @@ public class TypeSectionAdapter extends BaseSectionQuickAdapter<SectionType, Bas
         tv_head.setEnabled(false);
 
         if (item.t.type == Constants.TYPE_IN) {
-            int green = App.getInstance().getApplicationContext().getResources().getColor(R.color.green);
+            int green = App.getInstance().getContext().getResources().getColor(R.color.green);
             tv_head.setTextColor(green);
             helper.getView(R.id.item_vertical_line).setBackgroundColor(green);
         } else {
-            int blue = App.getInstance().getApplicationContext().getResources().getColor(R.color.mainColor1);
+            int blue = App.getInstance().getContext().getResources().getColor(R.color.mainColor1);
             tv_head.setTextColor(blue);
             helper.getView(R.id.item_vertical_line).setBackgroundColor(blue);
         }
