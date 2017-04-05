@@ -98,6 +98,8 @@ public class App extends DefaultApplicationLike {
         // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
         // CrashReport.initCrashReport(context, strategy);
         strategy.setAppReportDelay(2000);
+        strategy.setAppChannel(BuildConfig.FLAVOR);
+        strategy.setAppVersion(BuildConfig.VERSION_NAME);
 
         Beta.canShowUpgradeActs.add(MainActivity.class);
         Beta.initDelay = 2000;

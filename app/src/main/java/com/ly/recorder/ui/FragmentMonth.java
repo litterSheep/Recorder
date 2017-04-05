@@ -148,10 +148,10 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         xAxis.setDrawGridLines(false);//设置是否显示网格线
         xAxis.setDrawAxisLine(false);//是否画轴线
         xAxis.setAxisMinimum(1f);
-        float lastDayOfMonth = TimeUtil.getLastDayOfMonth(year, month);
-        if (lastDayOfMonth < 1 || lastDayOfMonth > 31)
-            lastDayOfMonth = 31;
-        xAxis.setAxisMaximum(lastDayOfMonth);
+//        float lastDayOfMonth = TimeUtil.getLastDayOfMonth(year, month);
+//        if (lastDayOfMonth < 1 || lastDayOfMonth > 31)
+//            lastDayOfMonth = 31;
+//        xAxis.setAxisMaximum(lastDayOfMonth+1);
 
         mLineChart.setOnChartGestureListener(this);
         mLineChart.setOnChartValueSelectedListener(this);
