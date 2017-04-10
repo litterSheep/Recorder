@@ -417,8 +417,8 @@ public class FragmentMonth extends Fragment implements OnChartValueSelectedListe
         Map<Integer, Float> temp = new HashMap<>();
         float total = 0;
         for (Account account : list) {
-            Integer day = account.getDay();
-            Float money = account.getMoney();
+            int day = account.getDay();
+            float money = account.getMoney();
             total += money;
             if (temp.containsKey(day)) {
                 money += temp.get(day); //把这一天的都累加

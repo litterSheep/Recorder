@@ -53,7 +53,7 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
     private LineChart mLineChart;
     private HorizontalBarChart mBarChart;
     private int year;//选定的年份
-    private int totalIn, totalOut;//总支出\总支出
+    private float totalIn, totalOut;//总支出\总支出
     private Typeface mTfLight;
     private int selectMonth;//在曲线上选择的月份
 
@@ -74,8 +74,8 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            totalOut = savedInstanceState.getInt(TOTAL_CURRENT);
-            totalIn = savedInstanceState.getInt(TOTAL_PREVIOUS);
+            totalOut = savedInstanceState.getFloat(TOTAL_CURRENT);
+            totalIn = savedInstanceState.getFloat(TOTAL_PREVIOUS);
         }
         View view = inflater.inflate(R.layout.fragment_fragment_together, container, false);
 
@@ -90,8 +90,8 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(TOTAL_PREVIOUS, totalIn);
-        outState.putInt(TOTAL_CURRENT, totalOut);
+        outState.putFloat(TOTAL_PREVIOUS, totalIn);
+        outState.putFloat(TOTAL_CURRENT, totalOut);
         super.onSaveInstanceState(outState);
     }
 
@@ -231,7 +231,7 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
                 if (entriesOut.size() > 0) {
                     if (entriesIn.size() > 0) {
                         dataSetOut = new LineDataSet(entriesOut, labelOut);
-                        dataSetIn = new LineDataSet(entriesIn, labelOut);
+                        dataSetIn = new LineDataSet(entriesIn, labelIn);
                         setLineStyle(dataSetOut, getResources().getColor(R.color.red1));
                         setLineStyle(dataSetIn, getResources().getColor(R.color.green));
                         lineData = new LineData(dataSetOut, dataSetIn, dataSetJieYu);
@@ -355,10 +355,10 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
             return entries;
         //key:月，value:该月对应的总支出/收入
         Map<Integer, Float> temp = new HashMap<>();
-        int total = 0;
+        float total = 0;
         for (Account account : list) {
-            Integer month = account.getMonth();
-            Float money = account.getMoney();
+            int month = account.getMonth();
+            float money = account.getMoney();
             total += money;
             if (temp.containsKey(month)) {
                 money += temp.get(month); //把这一天的都累加
@@ -417,18 +417,16 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         }
         for (int i = start; i < end + 1; i++) {//遍历这一年的每一月
             float out = 0, in = 0;//该月对应的收支
-            for (Entry entry : outs) {
-                int e = (int) entry.getX();
-                if (e == i) {//月份相等才取值
-                    out = entry.getY();
-                    break;
+            for (int j = 0; j < outs.size(); j++) {
+                Entry entry = outs.get(j);
+                if (entry.getX() <= i) {//取该月前所有月份的支出总和
+                    out += entry.getY();
                 }
             }
-            for (Entry entry : ins) {
-                int e = (int) entry.getX();
-                if (e == i) {//月份相等才取值
-                    in = entry.getY();
-                    break;
+            for (int j = 0; j < ins.size(); j++) {
+                Entry entry = ins.get(j);
+                if (entry.getX() <= i) {//取该月前所有月份的收入总和
+                    in += entry.getY();
                 }
             }
             list.add(new Entry(i, in - out));
