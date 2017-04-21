@@ -27504,16 +27504,16 @@ com.ly.recorder.App -> com.ly.recorder.App:
     android.database.sqlite.SQLiteDatabase db -> db
     com.ly.recorder.db.greendao.DaoMaster mDaoMaster -> mDaoMaster
     com.ly.recorder.db.greendao.DaoSession mDaoSession -> mDaoSession
-    39:39:com.ly.recorder.App getInstance() -> getInstance
-    45:46:void <init>(android.app.Application,int,boolean,long,long,android.content.Intent) -> <init>
-    51:58:void onBaseContextAttached(android.content.Context) -> onBaseContextAttached
-    62:63:void registerActivityLifecycleCallback(android.app.Application$ActivityLifecycleCallbacks) -> registerActivityLifecycleCallback
-    68:83:void onCreate() -> onCreate
-    86:86:android.content.Context getContext() -> getContext
-    91:108:void initBugly() -> initBugly
-    118:123:void setDatabase() -> setDatabase
-    126:128:com.ly.recorder.db.greendao.DaoSession getDaoSession() -> getDaoSession
-    132:132:android.database.sqlite.SQLiteDatabase getDb() -> getDb
+    40:41:void <init>(android.app.Application,int,boolean,long,long,android.content.Intent) -> <init>
+    44:44:com.ly.recorder.App getInstance() -> getInstance
+    50:57:void onBaseContextAttached(android.content.Context) -> onBaseContextAttached
+    61:62:void registerActivityLifecycleCallback(android.app.Application$ActivityLifecycleCallbacks) -> registerActivityLifecycleCallback
+    67:82:void onCreate() -> onCreate
+    85:85:android.content.Context getContext() -> getContext
+    90:109:void initBugly() -> initBugly
+    119:124:void setDatabase() -> setDatabase
+    127:129:com.ly.recorder.db.greendao.DaoSession getDaoSession() -> getDaoSession
+    133:133:android.database.sqlite.SQLiteDatabase getDb() -> getDb
 com.ly.recorder.Constants -> com.ly.recorder.a:
     java.lang.String[] TYPES_OUT -> a
     java.lang.String[] TYPES_IN -> b
@@ -28336,6 +28336,7 @@ com.ly.recorder.R$id -> com.ly.recorder.R$id:
     int tv_pop_content -> tv_pop_content
     int tv_prompt -> tv_prompt
     int tv_record_type -> tv_record_type
+    int tv_together_hint -> tv_together_hint
     int up -> up
     int useLogo -> useLogo
     int withText -> withText
@@ -28346,7 +28347,7 @@ com.ly.recorder.R$integer -> com.ly.recorder.R$integer:
     int abc_config_activityShortDur -> abc_config_activityShortDur
     int cancel_button_image_alpha -> cancel_button_image_alpha
     int status_bar_notification_info_maxnum -> status_bar_notification_info_maxnum
-    2256:2256:void <init>() -> <init>
+    2257:2257:void <init>() -> <init>
 com.ly.recorder.R$layout -> com.ly.recorder.R$layout:
     int abc_action_bar_title_item -> abc_action_bar_title_item
     int abc_action_bar_up_container -> abc_action_bar_up_container
@@ -28415,14 +28416,14 @@ com.ly.recorder.R$layout -> com.ly.recorder.R$layout:
     int time_header_label -> time_header_label
     int time_picker_dialog -> time_picker_dialog
     int year_label_text_view -> year_label_text_view
-    2262:2262:void <init>() -> <init>
+    2263:2263:void <init>() -> <init>
 com.ly.recorder.R$mipmap -> com.ly.recorder.R$mipmap:
     int date -> date
     int icon -> icon
     int left -> left
     int statistics -> statistics
     int xuanze -> xuanze
-    2331:2331:void <init>() -> <init>
+    2332:2332:void <init>() -> <init>
 com.ly.recorder.R$string -> com.ly.recorder.R$string:
     int abc_action_bar_home_description -> abc_action_bar_home_description
     int abc_action_bar_home_description_format -> abc_action_bar_home_description_format
@@ -28535,10 +28536,11 @@ com.ly.recorder.R$string -> com.ly.recorder.R$string:
     int time_separator -> time_separator
     int title_record -> title_record
     int title_statistics -> title_statistics
+    int together_hint -> together_hint
     int type_in -> type_in
     int type_out -> type_out
     int year_picker_description -> year_picker_description
-    2338:2338:void <init>() -> <init>
+    2339:2339:void <init>() -> <init>
 com.ly.recorder.R$style -> com.ly.recorder.R$style:
     int AlertDialog_AppCompat -> AlertDialog_AppCompat
     int AlertDialog_AppCompat_Light -> AlertDialog_AppCompat_Light
@@ -28901,7 +28903,7 @@ com.ly.recorder.R$style -> com.ly.recorder.R$style:
     int pop_anim -> pop_anim
     int time_label -> time_label
     int time_label_thin -> time_label_thin
-    2454:2454:void <init>() -> <init>
+    2456:2456:void <init>() -> <init>
 com.ly.recorder.R$styleable -> com.ly.recorder.R$styleable:
     int[] ActionBar -> ActionBar
     int ActionBar_background -> ActionBar_background
@@ -29288,11 +29290,11 @@ com.ly.recorder.R$styleable -> com.ly.recorder.R$styleable:
     int ViewStubCompat_android_id -> ViewStubCompat_android_id
     int ViewStubCompat_android_inflatedId -> ViewStubCompat_android_inflatedId
     int ViewStubCompat_android_layout -> ViewStubCompat_android_layout
-    2828:2828:void <init>() -> <init>
-    2895:7845:void <clinit>() -> <clinit>
+    2825:2825:void <init>() -> <init>
+    2892:7842:void <clinit>() -> <clinit>
 com.ly.recorder.R$xml -> com.ly.recorder.R$xml:
     int provider_paths -> provider_paths
-    2825:2825:void <init>() -> <init>
+    2822:2822:void <init>() -> <init>
 com.ly.recorder.adapter.HistoryAdapter -> com.ly.recorder.adapter.a:
     java.util.List mlist -> a
     android.content.Context context -> b
@@ -29456,14 +29458,14 @@ com.ly.recorder.ui.FragmentDay -> com.ly.recorder.ui.FragmentDay:
     95:102:void onHiddenChanged(boolean) -> onHiddenChanged
     105:109:void initData(com.ly.recorder.db.AccountManager,int,int,int) -> a
     112:114:java.util.List getList(int,int,int,int) -> a
-    118:168:void initBarChart(android.view.View) -> a
-    171:198:void initPieChart(android.view.View) -> b
-    201:220:void setAdapter() -> b
-    223:234:void setData(int,int,int) -> a
-    238:291:void setBarData() -> c
-    294:383:void setPieData(int) -> a
-    386:394:java.util.List getBarEntries(int) -> b
-    398:441:java.util.List getPieEntries(int) -> c
+    118:170:void initBarChart(android.view.View) -> a
+    173:200:void initPieChart(android.view.View) -> b
+    203:222:void setAdapter() -> b
+    225:236:void setData(int,int,int) -> a
+    240:293:void setBarData() -> c
+    296:385:void setPieData(int) -> a
+    388:396:java.util.List getBarEntries(int) -> b
+    400:443:java.util.List getPieEntries(int) -> c
     46:46:int access$000(com.ly.recorder.ui.FragmentDay) -> a
     46:46:int access$100(com.ly.recorder.ui.FragmentDay) -> b
     46:46:int access$200(com.ly.recorder.ui.FragmentDay) -> c
@@ -29473,13 +29475,13 @@ com.ly.recorder.ui.FragmentDay -> com.ly.recorder.ui.FragmentDay:
 com.ly.recorder.ui.FragmentDay$1 -> com.ly.recorder.ui.FragmentDay$1:
     com.ly.recorder.ui.FragmentDay this$0 -> a
     119:119:void <init>(com.ly.recorder.ui.FragmentDay) -> <init>
-    124:131:void onValueSelected(com.github.mikephil.charting.data.Entry,com.github.mikephil.charting.highlight.Highlight) -> onValueSelected
-    136:136:void onNothingSelected() -> onNothingSelected
+    123:133:void onValueSelected(com.github.mikephil.charting.data.Entry,com.github.mikephil.charting.highlight.Highlight) -> onValueSelected
+    138:138:void onNothingSelected() -> onNothingSelected
 com.ly.recorder.ui.FragmentDay$2 -> com.ly.recorder.ui.FragmentDay$2:
     com.ly.recorder.ui.FragmentDay this$0 -> a
-    433:433:void <init>(com.ly.recorder.ui.FragmentDay) -> <init>
-    436:438:int compare(com.github.mikephil.charting.data.PieEntry,com.github.mikephil.charting.data.PieEntry) -> a
-    433:433:int compare(java.lang.Object,java.lang.Object) -> compare
+    435:435:void <init>(com.ly.recorder.ui.FragmentDay) -> <init>
+    438:440:int compare(com.github.mikephil.charting.data.PieEntry,com.github.mikephil.charting.data.PieEntry) -> a
+    435:435:int compare(java.lang.Object,java.lang.Object) -> compare
 com.ly.recorder.ui.FragmentMonth -> com.ly.recorder.ui.FragmentMonth:
     java.lang.String IS_OPEN_COMPARISON -> a
     java.lang.String TOTAL_PREVIOUS -> b
@@ -29539,37 +29541,38 @@ com.ly.recorder.ui.FragmentTogether -> com.ly.recorder.ui.FragmentTogether:
     com.github.mikephil.charting.charts.LineChart mLineChart -> d
     com.github.mikephil.charting.charts.HorizontalBarChart mBarChart -> e
     int year -> f
-    int totalIn -> g
-    int totalOut -> h
+    float totalIn -> g
+    float totalOut -> h
     android.graphics.Typeface mTfLight -> i
     int selectMonth -> j
-    50:62:void <init>() -> <init>
-    65:66:com.ly.recorder.ui.FragmentTogether newInstance() -> a
-    71:72:void onCreate(android.os.Bundle) -> onCreate
-    76:88:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> onCreateView
-    93:96:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-    99:101:void initData(com.ly.recorder.db.AccountManager,int) -> a
-    104:106:java.util.List getList(int,int) -> a
-    110:143:void initLineChart(android.view.View) -> a
-    146:178:void initBarChart(android.view.View) -> b
-    181:188:void setData(int) -> a
-    192:266:void setLineData() -> b
-    276:336:void setBarData(int) -> b
-    340:350:void setLineStyle(com.github.mikephil.charting.data.LineDataSet,int) -> a
-    353:392:java.util.List getLineEntries(int,java.util.List) -> a
-    396:436:java.util.List getJieYuEntries(java.util.List,java.util.List) -> a
-    441:455:java.util.List getBarEntries(int,int) -> b
-    459:468:java.util.List getJieYuBarEntries(java.util.List,java.util.List) -> b
-    474:480:void onValueSelected(com.github.mikephil.charting.data.Entry,com.github.mikephil.charting.highlight.Highlight) -> onValueSelected
-    484:487:void onNothingSelected() -> onNothingSelected
-    493:494:void onChartLongPressed(android.view.MotionEvent) -> onChartLongPressed
-    498:499:void onChartGestureStart(android.view.MotionEvent,com.github.mikephil.charting.listener.ChartTouchListener$ChartGesture) -> onChartGestureStart
-    503:508:void onChartGestureEnd(android.view.MotionEvent,com.github.mikephil.charting.listener.ChartTouchListener$ChartGesture) -> onChartGestureEnd
-    512:513:void onChartDoubleTapped(android.view.MotionEvent) -> onChartDoubleTapped
-    517:518:void onChartSingleTapped(android.view.MotionEvent) -> onChartSingleTapped
-    522:523:void onChartFling(android.view.MotionEvent,android.view.MotionEvent,float,float) -> onChartFling
-    527:528:void onChartScale(android.view.MotionEvent,float,float) -> onChartScale
-    532:533:void onChartTranslate(android.view.MotionEvent,float,float) -> onChartTranslate
+    android.widget.TextView tv_together_hint -> k
+    51:64:void <init>() -> <init>
+    67:68:com.ly.recorder.ui.FragmentTogether newInstance() -> a
+    73:74:void onCreate(android.os.Bundle) -> onCreate
+    78:92:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> onCreateView
+    97:100:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    103:105:void initData(com.ly.recorder.db.AccountManager,int) -> a
+    108:110:java.util.List getList(int,int) -> a
+    114:147:void initLineChart(android.view.View) -> a
+    150:182:void initBarChart(android.view.View) -> b
+    185:192:void setData(int) -> a
+    196:270:void setLineData() -> b
+    280:350:void setBarData(int) -> b
+    354:364:void setLineStyle(com.github.mikephil.charting.data.LineDataSet,int) -> a
+    367:406:java.util.List getLineEntries(int,java.util.List) -> a
+    410:448:java.util.List getJieYuEntries(java.util.List,java.util.List) -> a
+    453:467:java.util.List getBarEntries(int,int) -> b
+    471:480:java.util.List getJieYuBarEntries(java.util.List,java.util.List) -> b
+    486:492:void onValueSelected(com.github.mikephil.charting.data.Entry,com.github.mikephil.charting.highlight.Highlight) -> onValueSelected
+    496:499:void onNothingSelected() -> onNothingSelected
+    505:506:void onChartLongPressed(android.view.MotionEvent) -> onChartLongPressed
+    510:511:void onChartGestureStart(android.view.MotionEvent,com.github.mikephil.charting.listener.ChartTouchListener$ChartGesture) -> onChartGestureStart
+    515:520:void onChartGestureEnd(android.view.MotionEvent,com.github.mikephil.charting.listener.ChartTouchListener$ChartGesture) -> onChartGestureEnd
+    524:525:void onChartDoubleTapped(android.view.MotionEvent) -> onChartDoubleTapped
+    529:530:void onChartSingleTapped(android.view.MotionEvent) -> onChartSingleTapped
+    534:535:void onChartFling(android.view.MotionEvent,android.view.MotionEvent,float,float) -> onChartFling
+    539:540:void onChartScale(android.view.MotionEvent,float,float) -> onChartScale
+    544:545:void onChartTranslate(android.view.MotionEvent,float,float) -> onChartTranslate
 com.ly.recorder.ui.MainActivity -> com.ly.recorder.ui.MainActivity:
     android.widget.EditText et_money -> b
     android.widget.EditText et_remark -> c
@@ -29583,38 +29586,38 @@ com.ly.recorder.ui.MainActivity -> com.ly.recorder.ui.MainActivity:
     com.ly.recorder.view.ListPopupWindow listPopupWindow -> k
     int type -> l
     int typeIndex -> m
-    30:40:void <init>() -> <init>
-    44:49:void onCreate(android.os.Bundle) -> onCreate
-    52:91:void initViews() -> b
-    94:101:void setAdapter() -> c
-    105:142:void save() -> d
-    146:161:void onClick(android.view.View) -> onClick
-    164:195:void showTypePopup(android.view.View) -> a
-    202:215:int getIndexByName(java.lang.String,int) -> a
-    30:30:java.util.List access$000(com.ly.recorder.ui.MainActivity) -> a
-    30:30:com.ly.recorder.db.AccountManager access$100(com.ly.recorder.ui.MainActivity) -> b
-    30:30:com.ly.recorder.adapter.HistoryAdapter access$200(com.ly.recorder.ui.MainActivity) -> c
-    30:30:int access$302(com.ly.recorder.ui.MainActivity,int) -> a
-    30:30:int access$402(com.ly.recorder.ui.MainActivity,int) -> b
-    30:30:int access$500(com.ly.recorder.ui.MainActivity,java.lang.String,int) -> a
-    30:30:android.widget.TextView access$600(com.ly.recorder.ui.MainActivity) -> d
+    29:39:void <init>() -> <init>
+    43:48:void onCreate(android.os.Bundle) -> onCreate
+    51:90:void initViews() -> b
+    93:100:void setAdapter() -> c
+    104:141:void save() -> d
+    145:160:void onClick(android.view.View) -> onClick
+    163:194:void showTypePopup(android.view.View) -> a
+    201:214:int getIndexByName(java.lang.String,int) -> a
+    29:29:java.util.List access$000(com.ly.recorder.ui.MainActivity) -> a
+    29:29:com.ly.recorder.db.AccountManager access$100(com.ly.recorder.ui.MainActivity) -> b
+    29:29:com.ly.recorder.adapter.HistoryAdapter access$200(com.ly.recorder.ui.MainActivity) -> c
+    29:29:int access$302(com.ly.recorder.ui.MainActivity,int) -> a
+    29:29:int access$402(com.ly.recorder.ui.MainActivity,int) -> b
+    29:29:int access$500(com.ly.recorder.ui.MainActivity,java.lang.String,int) -> a
+    29:29:android.widget.TextView access$600(com.ly.recorder.ui.MainActivity) -> d
 com.ly.recorder.ui.MainActivity$1 -> com.ly.recorder.ui.MainActivity$1:
     com.ly.recorder.ui.MainActivity this$0 -> a
-    55:55:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
-    58:59:void onRightClick() -> a
+    54:54:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
+    57:58:void onRightClick() -> a
 com.ly.recorder.ui.MainActivity$2 -> com.ly.recorder.ui.MainActivity$2:
     com.ly.recorder.ui.MainActivity this$0 -> a
-    70:70:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
-    74:88:boolean onItemLongClick(android.widget.AdapterView,android.view.View,int,long) -> onItemLongClick
+    69:69:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
+    73:87:boolean onItemLongClick(android.widget.AdapterView,android.view.View,int,long) -> onItemLongClick
 com.ly.recorder.ui.MainActivity$2$1 -> com.ly.recorder.ui.MainActivity$2$1:
     int val$position -> a
     com.ly.recorder.ui.MainActivity$2 this$1 -> b
-    76:76:void <init>(com.ly.recorder.ui.MainActivity$2,int) -> <init>
-    79:82:void onClick(android.content.DialogInterface,int) -> onClick
+    75:75:void <init>(com.ly.recorder.ui.MainActivity$2,int) -> <init>
+    78:81:void onClick(android.content.DialogInterface,int) -> onClick
 com.ly.recorder.ui.MainActivity$3 -> com.ly.recorder.ui.MainActivity$3:
     com.ly.recorder.ui.MainActivity this$0 -> a
-    179:179:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
-    182:189:void OnItemClick(int,java.lang.String) -> a
+    178:178:void <init>(com.ly.recorder.ui.MainActivity) -> <init>
+    181:188:void OnItemClick(int,java.lang.String) -> a
 com.ly.recorder.ui.StatisticsActivity -> com.ly.recorder.ui.StatisticsActivity:
     java.lang.String YEAR -> b
     java.lang.String MONTH -> c
@@ -29662,7 +29665,7 @@ com.ly.recorder.ui.StatisticsActivity$3 -> com.ly.recorder.ui.StatisticsActivity
     99:99:void <init>(com.ly.recorder.ui.StatisticsActivity) -> <init>
     104:116:void onCheckedChanged(android.widget.RadioGroup,int) -> onCheckedChanged
 com.ly.recorder.utils.AppUtil -> com.ly.recorder.b.a:
-    21:40:java.lang.String getProcessName(int) -> a
+    52:71:java.lang.String getProcessName(int) -> a
 com.ly.recorder.utils.CrashHandler -> com.ly.recorder.b.b:
     com.ly.recorder.utils.CrashHandler INSTANCE -> a
     java.lang.Thread$UncaughtExceptionHandler mDefaultHandler -> b
@@ -29692,6 +29695,7 @@ com.ly.recorder.utils.TimeUtil -> com.ly.recorder.b.f:
     86:109:java.lang.String formatTimestamp(long) -> a
     266:276:int getLastDayOfMonth(int,int) -> a
     280:281:boolean isCurrentYear(int) -> a
+    285:288:boolean isCurrentMonth(int,int) -> b
     292:296:boolean isCurrentDay(int,int,int) -> a
 com.ly.recorder.utils.ToastUtil -> com.ly.recorder.b.g:
     13:15:void showToast(android.content.Context,java.lang.String) -> a

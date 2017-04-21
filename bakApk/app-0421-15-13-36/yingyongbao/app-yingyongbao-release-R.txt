@@ -800,6 +800,7 @@ int id tv_item_type 0x7f0c0079
 int id tv_pop_content 0x7f0c007c
 int id tv_prompt 0x7f0c009e
 int id tv_record_type 0x7f0c0067
+int id tv_together_hint 0x7f0c00ab
 int id up 0x7f0c0016
 int id useLogo 0x7f0c0020
 int id withText 0x7f0c002f
@@ -991,6 +992,7 @@ int string time_placeholder 0x7f07006c
 int string time_separator 0x7f07006d
 int string title_record 0x7f07006e
 int string title_statistics 0x7f07006f
+int string together_hint 0x7f070072
 int string type_in 0x7f070070
 int string type_out 0x7f070071
 int string year_picker_description 0x7f07001f
