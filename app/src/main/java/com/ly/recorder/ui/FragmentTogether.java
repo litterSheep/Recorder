@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -56,6 +57,7 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
     private float totalIn, totalOut;//总支出\总支出
     private Typeface mTfLight;
     private int selectMonth;//在曲线上选择的月份
+    private TextView tv_together_hint;
 
     public FragmentTogether() {
         // Required empty public constructor
@@ -80,6 +82,8 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         View view = inflater.inflate(R.layout.fragment_fragment_together, container, false);
 
         mTfLight = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
+
+        tv_together_hint = (TextView) view.findViewById(R.id.tv_together_hint);
 
         initLineChart(view);
         initBarChart(view);
@@ -273,6 +277,16 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
      */
     private void setBarData(int selectMonth) {
 
+        String text = getString(R.string.together_hint);
+        if (selectMonth > 0) {
+            if (TimeUtil.isCurrentMonth(year, selectMonth)) {
+                text = "本月收支结余情况";
+            } else {
+                text = selectMonth + "月收支结余情况";
+            }
+        }
+
+        tv_together_hint.setText(text);
         List<BarEntry> barEntriesOut = getBarEntries(Constants.TYPE_OUT, selectMonth);
         List<BarEntry> barEntriesIn = getBarEntries(Constants.TYPE_IN, selectMonth);
         List<BarEntry> barEntriesJieYu = getJieYuBarEntries(barEntriesOut, barEntriesIn);

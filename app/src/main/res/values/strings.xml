@@ -26,6 +26,7 @@
     <string name="delete">删除</string>
     <string name="cancel">取消</string>
     <string name="history">-- 历史入账 --</string>
+    <string name="together_hint">本年收支结余情况</string>
     <string name="day_history">-- 今日账单 --</string>
     <string name="no_day_history">-- 没有查询到对应的数据 --</string>
     <string name="no_history">-- 暂无历史入账 --</string>

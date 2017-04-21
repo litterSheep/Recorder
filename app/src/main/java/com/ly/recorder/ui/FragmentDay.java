@@ -120,6 +120,8 @@ public class FragmentDay extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
 
+                if (e.getY() <= 0)
+                    return;
                 int type;
                 if (e.getX() == BAR_OUT) {//收入
                     type = Constants.TYPE_OUT;

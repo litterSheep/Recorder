@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void setAdapter() {
         accountManager = new AccountManager();
-        mlist = accountManager.queryForRecentNum(60);
+        mlist = accountManager.queryForRecentNum(100);
         if (mlist == null)
             mlist = new ArrayList<>();
         adapter = new HistoryAdapter(mlist, this);
