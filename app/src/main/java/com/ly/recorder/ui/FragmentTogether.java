@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -21,11 +23,16 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.db.Account;
@@ -37,6 +44,8 @@ import com.ly.recorder.utils.logger.Logger;
 import com.ly.recorder.view.ChartMarkerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +62,14 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
     private AccountManager accountManager;
     private LineChart mLineChart;
     private HorizontalBarChart mBarChart;
+    private PieChart mPieChart;
     private int year;//选定的年份
     private float totalIn, totalOut;//总支出\总支出
     private Typeface mTfLight;
     private int selectMonth;//在曲线上选择的月份
-    private TextView tv_together_hint;
+    private TextView tv_together_hint, tv_together_month;
+    private float barValue = 0;//柱状图每一项对应的值
+    private boolean isSelectYear = true;//如果选择折线图的月份并长按，则选择的是月
 
     public FragmentTogether() {
         // Required empty public constructor
@@ -87,6 +99,8 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
 
         initLineChart(view);
         initBarChart(view);
+        initPieChart(view);
+
         setData(year);
 
         return view;
@@ -169,6 +183,28 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         mBarChart.setDrawGridBackground(false);
 
         mBarChart.getXAxis().setEnabled(false);
+        mBarChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+
+                switch ((int) e.getX()) {
+                    case 1://收入
+                        setPieData(Constants.TYPE_IN, e.getY());
+                        break;
+                    case 2://支出
+                        setPieData(Constants.TYPE_OUT, e.getY());
+                        break;
+                    default:
+                        ToastUtil.showToast(getActivity(), "该类型下无详细数据");
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         YAxis yl = mBarChart.getAxisLeft();
         yl.setTypeface(mTfLight);
@@ -181,6 +217,39 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         mBarChart.getAxisRight().setEnabled(false);
     }
 
+    private void initPieChart(View view) {
+        tv_together_month = (TextView) view.findViewById(R.id.tv_together_month);
+        mPieChart = (PieChart) view.findViewById(R.id.pie_chart_month);
+        mPieChart.setUsePercentValues(true);
+        mPieChart.getDescription().setEnabled(false);
+        //饼图与文字描述的padding
+        mPieChart.setExtraOffsets(5, 10, 50, 5);
+
+        mPieChart.setDragDecelerationFrictionCoef(0.85f);//拖动饼图 松手后滑动的灵敏度
+
+        mPieChart.setDrawHoleEnabled(true);
+        mPieChart.setHoleColor(Color.WHITE);
+
+        mPieChart.setTransparentCircleColor(Color.WHITE);
+        mPieChart.setTransparentCircleAlpha(110);//中央圆孔背景透明度
+
+        mPieChart.setHoleRadius(20f);//中央圆孔的大小
+        mPieChart.setTransparentCircleRadius(23f);//中央圆孔透明圈大小
+
+        mPieChart.setDrawCenterText(false);//中间的文字
+        //mPieChart.setCenterTextTypeface(mTfLight);
+        //mPieChart.setCenterText(getString(R.string.app_name));
+
+        mPieChart.setRotationAngle(0);
+        // enable rotation of the chart by touch
+        mPieChart.setRotationEnabled(true);
+        mPieChart.setHighlightPerTapEnabled(true);
+
+        // add a selection listener
+        mPieChart.setOnChartValueSelectedListener(this);
+        mPieChart.setEntryLabelTypeface(mTfLight);
+    }
+
     public void setData(int year) {
         this.year = year;
         if (mLineChart == null || mBarChart == null) {
@@ -189,6 +258,7 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         }
         setLineData();
         setBarData(selectMonth);
+        setPieData(Constants.TYPE_OUT, totalOut);
     }
 
     private void setLineData() {
@@ -349,6 +419,111 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         l.setXEntrySpace(8f);//描述之间的间隔
     }
 
+    private void setPieData(int type, float totalCurrent) {
+        if (mPieChart == null)
+            return;
+
+        List<PieEntry> entries = getPieEntries(type);
+
+        if (entries.size() > 0) {
+
+            String title = "支出";
+            if (type == Constants.TYPE_IN)
+                title = "收入";
+            String label = "共" + title + totalCurrent;
+
+            if (selectMonth < 1 || selectMonth > 12 || isSelectYear) {
+                title = "本年" + title;
+            } else {
+                title = selectMonth + "月" + title;
+            }
+            tv_together_month.setVisibility(View.VISIBLE);
+            tv_together_month.setText(title + "情况");
+            mPieChart.setVisibility(View.VISIBLE);
+
+            PieDataSet dataSet;
+            PieData pieData = mPieChart.getData();
+
+            if (pieData != null && pieData.getDataSetCount() > 0) {
+
+                dataSet = (PieDataSet) pieData.getDataSet();
+                dataSet.setValues(entries);
+                dataSet.setLabel(label);
+
+                pieData.notifyDataChanged();
+                mPieChart.notifyDataSetChanged();
+            } else {
+                dataSet = new PieDataSet(entries, label);
+
+                //dataSet.setDrawIcons(false);
+                //dataSet.setIconsOffset(new MPPointF(0, 40));
+
+                dataSet.setSliceSpace(2f);//扇形之间的间隙
+                dataSet.setSelectionShift(5f);//点击扇形后多出的部分
+
+                // add a lot of colors
+
+                ArrayList<Integer> colors = new ArrayList<>();
+
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.LIBERTY_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+
+                colors.add(ColorTemplate.getHoloBlue());
+
+                dataSet.setColors(colors);
+                //dataSet.setSelectionShift(0f);
+
+                PieData data = new PieData(dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(14f);
+                data.setValueTextColor(Color.WHITE);
+                //data.setValueTypeface(mTfLight);
+                // undo all highlights
+                mPieChart.setData(data);
+            }
+        } else {
+            mPieChart.clear();
+            tv_together_month.setVisibility(View.GONE);
+        }
+        mPieChart.highlightValues(null);
+        //mPieChart.invalidate();
+
+        mPieChart.setNoDataText(getString(R.string.show_no_data));
+        mPieChart.setNoDataTextColor(getResources().getColor(R.color.gray_text));
+
+        mPieChart.animateY(1200, Easing.EasingOption.EaseInOutQuad);
+        // mPieChart.spin(2000, 0, 360);
+
+        Legend l = mPieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setTypeface(mTfLight);
+        l.setDrawInside(false);
+        l.setYEntrySpace(3f);//描述文字之间的间隔
+        l.setYOffset(8f);//描述文字marginTop
+        l.setFormSize(10f);
+
+        // entry label styling
+        //在扇形区内隐藏每个类别的描述
+        mPieChart.setDrawEntryLabels(false);
+        mPieChart.setEntryLabelColor(Color.GRAY);
+        mPieChart.setEntryLabelTypeface(mTfLight);
+        mPieChart.setEntryLabelTextSize(12f);
+    }
+
     //设置曲线样式
     private void setLineStyle(LineDataSet dataSet, int color) {
         dataSet.setColor(color);
@@ -458,11 +633,13 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
             list = getList(type, year);
         }
         List<BarEntry> entries = new ArrayList<>();
-        float total = 0;
+
+        barValue = 0;//每次要重置，避免方法多次调用累加
         for (Account account : list) {
-            total += account.getMoney();
+            barValue += account.getMoney();
         }
-        entries.add(new BarEntry(type == Constants.TYPE_OUT ? BAR_OUT : BAR_IN, total));
+
+        entries.add(new BarEntry(type == Constants.TYPE_OUT ? BAR_OUT : BAR_IN, barValue));
 
         return entries;
     }
@@ -480,9 +657,65 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
         return entries;
     }
 
+    private List<PieEntry> getPieEntries(int type) {
+        List<Account> list;
+        if (selectMonth > 0 && selectMonth < 13) {
+            if (accountManager == null)
+                accountManager = new AccountManager();
+            if (isSelectYear) {
+                list = getList(type, year);
+            } else {
+                list = accountManager.queryForMonth(type, year, selectMonth);
+            }
+        } else {
+            list = getList(type, year);
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        if (list == null || list.size() == 0)
+            return entries;
+        //key:type  value:该类型对应的总支出
+        Map<Integer, Float> types = new HashMap<>();
+        for (Account account : list) {
+            Float money = account.getMoney();
+
+            Integer typeIndex = account.getTypeIndex();
+            if (typeIndex == null) {
+                if (type == Constants.TYPE_IN) {//设置为默认值
+                    typeIndex = Constants.TYPES_IN.length - 1;
+                } else {
+                    typeIndex = Constants.TYPES_OUT.length - 1;
+                }
+            }
+            if (types.containsKey(typeIndex)) {
+                money += types.get(typeIndex);
+            }
+            types.put(typeIndex, money);
+        }
+
+        for (Integer typeIndex : types.keySet()) {
+            float money = types.get(typeIndex);
+            if (type == Constants.TYPE_IN) {
+                entries.add(new PieEntry(money, Constants.TYPES_IN[typeIndex] + money));
+            } else {
+                entries.add(new PieEntry(money, Constants.TYPES_OUT[typeIndex] + money));
+            }
+        }
+
+        //按类别金额从降序排列
+        Collections.sort(entries, new Comparator<PieEntry>() {
+            @Override
+            public int compare(PieEntry o1, PieEntry o2) {
+                if (o1.getValue() > o2.getValue())
+                    return -1;
+                return 1;
+            }
+        });
+        return entries;
+    }
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-
         selectMonth = (int) e.getX();
         boolean isShow = PreferencesUtils.getBoolean(getActivity(), Constants.PREFERENCES_FLAG_BAR);
         if (!isShow) {
@@ -495,14 +728,16 @@ public class FragmentTogether extends Fragment implements OnChartValueSelectedLi
     public void onNothingSelected() {
         Logger.i("onNothingSelected");
         selectMonth = 0;
+        isSelectYear = true;
         setBarData(selectMonth);
     }
 
 
     @Override
     public void onChartLongPressed(MotionEvent me) {
-
+        isSelectYear = false;
         setBarData(selectMonth);
+        setPieData(Constants.TYPE_OUT, barValue);//长按时默认展示支出详情
     }
 
     @Override

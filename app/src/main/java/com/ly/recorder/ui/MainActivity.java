@@ -3,6 +3,8 @@ package com.ly.recorder.ui;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -45,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initViews();
         setAdapter();
 
+        //generateData();
     }
 
     private void initViews() {
@@ -87,11 +90,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 return true;
             }
         });
+        tv_save.setEnabled(false);
+        et_money.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (et_money.length() > 0) {
+                    tv_save.setEnabled(true);
+                } else {
+                    tv_save.setEnabled(false);
+                }
+            }
+        });
     }
 
     private void setAdapter() {
         accountManager = new AccountManager();
-        mlist = accountManager.queryForRecentNum(100);
+        mlist = accountManager.queryForRecentNum(200);
         if (mlist == null)
             mlist = new ArrayList<>();
         adapter = new HistoryAdapter(mlist, this);
@@ -145,7 +170,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tv_commit:
                 hideSoftKeyboard();
-                //generateData();
                 save();
                 break;
             case R.id.tv_record_type:

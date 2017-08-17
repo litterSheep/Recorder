@@ -2,7 +2,6 @@ package com.ly.recorder.utils;
 
 import android.content.Context;
 import android.os.Debug;
-import android.os.Process;
 
 import com.ly.recorder.Constants;
 import com.ly.recorder.utils.logger.Logger;
@@ -88,8 +87,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 Logger.e("Error : " + e.toString());
             }
 
-            Process.killProcess(Process.myPid());
-            System.exit(10);
+//            Process.killProcess(Process.myPid());
+//            System.exit(10);
         }
     }
 
@@ -120,7 +119,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         // 如果是OOM异常，手机内存快照
         collectionDumpHprofDataIfOOM(ex);
 
-        System.exit(0);
+        //System.exit(0);
 
         return false;
     }

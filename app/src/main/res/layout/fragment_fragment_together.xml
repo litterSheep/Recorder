@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:overScrollMode="never"
     tools:context="com.ly.recorder.ui.FragmentMonth">
 
     <LinearLayout
@@ -28,6 +29,24 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/bar_chart_h" />
 
+        <TextView
+            android:id="@+id/tv_together_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="@string/together_hint"
+            android:visibility="gone"
+            android:textSize="14sp" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart_month"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@+id/line_chart_month"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
     </LinearLayout>
 
 </ScrollView>

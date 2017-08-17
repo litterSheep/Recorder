@@ -129,7 +129,8 @@ public class FragmentDay extends Fragment {
                     type = Constants.TYPE_IN;
                 }
                 adapter.setList(getList(type, year, month, day));
-                setPieData(type);
+                List<PieEntry> entries = getPieEntries(type);
+                setPieData(entries, type);
             }
 
             @Override
@@ -229,7 +230,11 @@ public class FragmentDay extends Fragment {
         if (mBarChart != null) {
             setBarData();
             setAdapter();
-            setPieData(Constants.TYPE_OUT);//默认是显示支出
+            List<PieEntry> entries = getPieEntries(Constants.TYPE_OUT);
+            if (entries == null || entries.size() == 0) {
+                entries = getPieEntries(Constants.TYPE_IN);
+            }
+            setPieData(entries, Constants.TYPE_OUT);
         } else {
             Logger.w("Chart == null, return...");
         }
@@ -292,8 +297,7 @@ public class FragmentDay extends Fragment {
         l.setXEntrySpace(8f);//描述之间的间隔
     }
 
-    private void setPieData(int type) {
-        List<PieEntry> entries = getPieEntries(type);
+    private void setPieData(List<PieEntry> entries, int type) {
 
         if (entries.size() > 0) {
 

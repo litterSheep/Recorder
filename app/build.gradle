@@ -17,12 +17,12 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        //applicationId "com.ly.recorderOnlySelf"//自己用的版本，不会加载bugly组件...嘿嘿嘿
-        applicationId "com.ly.recorderMaster"
+        applicationId "com.ly.recorderOnlySelf"//自己用的版本，不会加载bugly组件...嘿嘿嘿
+//        applicationId "com.ly.recorderMaster"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 23
-        versionName "2.3"
+        versionCode 25
+        versionName "2.5"
 
         ndk {
             // 设置支持的SO库架构
