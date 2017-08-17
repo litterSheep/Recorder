@@ -1,6 +1,7 @@
 package com.ly.recorder.ui;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -18,6 +19,7 @@ import com.ly.recorder.db.Account;
 import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.entity.SectionType;
 import com.ly.recorder.entity.Type;
+import com.ly.recorder.utils.ScreenUtil;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
 import com.ly.recorder.view.CustomTitleBar;
@@ -27,6 +29,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -39,6 +45,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ListPopupWindow listPopupWindow;
     private int type = Constants.TYPE_OUT;
     private int typeIndex = Constants.TYPES_OUT.length - 1;//收入/支出对应的数组下标
+
+    private KonfettiView konfettiView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +120,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
+
+        konfettiView = (KonfettiView) findViewById(R.id.konfettiView);
+        showBoom();
     }
 
     private void setAdapter() {
@@ -165,12 +176,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void showBoom() {
+        konfettiView.build()
+                .addColors(Color.parseColor("#FFF9D4CE"), Color.parseColor("#FFDAE7CE"), Color.parseColor("#FFDCDBEA"), Color.parseColor("#FFFFD96D"))
+                .setDirection(0.0, 400.0)
+                .setSpeed(3f, 20f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(2000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(Size.SMALL)
+                .setPosition(500f, ScreenUtil.getScreenWidth(this) / 2f, 0f, ScreenUtil.getScreenHeight(this) / 2f)
+                .stream(300, 800L);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_commit:
                 hideSoftKeyboard();
                 save();
+                showBoom();
+                showBoom();
+                showBoom();
                 break;
             case R.id.tv_record_type:
 

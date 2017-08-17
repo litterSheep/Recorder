@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.ly.recorderOnlySelf"//自己用的版本，不会加载bugly组件...嘿嘿嘿
 //        applicationId "com.ly.recorderMaster"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 25
         versionName "2.5"
@@ -90,4 +90,6 @@ dependencies {
     //compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.tencent.bugly:crashreport_upgrade:1.2.4'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
+
+    compile 'nl.dionsegijn:konfetti:1.0'
 }

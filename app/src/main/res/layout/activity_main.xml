@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
-    android:orientation="vertical"
     tools:context="com.ly.recorder.ui.MainActivity">
-
-    <com.ly.recorder.view.CustomTitleBar
-        android:id="@+id/top_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_height="match_parent"
+        android:id="@+id/activity_main"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+
+        <com.ly.recorder.view.CustomTitleBar
+            android:id="@+id/top_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/record_num"
-            android:textSize="16sp" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/record_num"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:background="@color/transparent"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:minWidth="120dp"
+                android:padding="5dp" />
+
+            <TextView
+                android:id="@+id/tv_record_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:drawablePadding="5dp"
+                android:drawableRight="@mipmap/xuanze"
+                android:padding="8dp"
+                android:text="@string/record_type"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <EditText
-            android:id="@+id/et_money"
-            android:layout_width="wrap_content"
+            android:id="@+id/et_remark"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
             android:background="@color/transparent"
-            android:inputType="numberDecimal"
-            android:maxLines="1"
-            android:minWidth="120dp"
-            android:padding="5dp" />
+            android:gravity="top"
+            android:hint="@string/record_remark"
+            android:maxLines="3"
+            android:minHeight="100dp"
+            android:padding="5dp"
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tv_record_type"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_commit"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@mipmap/xuanze"
-            android:padding="8dp"
-            android:text="@string/record_type"
-            android:textSize="16sp" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/normal_btn_selector"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/record_commit"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <include layout="@layout/include_list" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/et_remark"
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/konfettiView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@color/transparent"
-        android:gravity="top"
-        android:hint="@string/record_remark"
-        android:maxLines="3"
-        android:minHeight="100dp"
-        android:padding="5dp"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/tv_commit"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/normal_btn_selector"
-        android:gravity="center"
-        android:padding="12dp"
-        android:text="@string/record_commit"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <include layout="@layout/include_list" />
-
-</LinearLayout>
+        android:layout_height="match_parent" />
+</FrameLayout>
