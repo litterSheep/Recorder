@@ -146,16 +146,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void onDateSet(DatePickerDialog datePickerDialog, int year,
                                           int month, int day) {
+                        month++;//calendar中月份是从0开始，所以+1
                         if (TimeUtil.isCurrentDay(year, month, day)) {
                             tv_record_date.setText("今天");
+                            selectedYear = 0;
+                            selectedMonth = 0;
+                            selectedDay = 0;
                         } else {
                             tv_record_date.setText(year + "-" + month + "-" + day);
                             selectedYear = year;
-                            selectedMonth = month + 1;//calendar中月份是从0开始，所以+1
+                            selectedMonth = month;
                             selectedDay = day;
                         }
-                        tv_record_date.setTextColor(getResources().getColor(R.color.mainColor1));
 
+                        tv_record_date.setTextColor(getResources().getColor(R.color.mainColor1));
                     }
                 }
                 , currentYear
@@ -198,10 +202,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (selectedYear != 0 && selectedMonth != 0 && selectedDay != 0) {
                 // TODO: 2017/9/6 在这里可以判断日期是否是选择的今天以后的日期
                 year = selectedYear;
-                money = selectedMonth;
+                month = selectedMonth;
                 day = selectedDay;
-                timeStamp = TimeUtil.getMillisecondByFormat(selectedDay + "-" + selectedMonth + "-" + selectedDay
-                        , TimeUtil.FORMAT_DATE);
+                timeStamp = TimeUtil.getMillisecondByFormat(year + "-" + month + "-" + day, TimeUtil.FORMAT_DATE);
             }
             Account account = new Account();
             account.setMoney(money);

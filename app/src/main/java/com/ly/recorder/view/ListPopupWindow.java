@@ -54,7 +54,7 @@ public class ListPopupWindow extends PopupWindow {
         });
         recyclerview.setAdapter(typeAdapter);
 
-        this.setHeight(PixelUtil.dp2px(mContext, 300));
+        this.setHeight(PixelUtil.dp2px(mContext, 320));
         this.setWidth(ScreenUtil.getScreenWidth(context) * 3 / 4);
         this.setFocusable(false);
         this.setOutsideTouchable(true);//点击外部消失

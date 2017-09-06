@@ -297,8 +297,10 @@ public class TimeUtil {
     }
 
     public static void main(String[] arg) {
-        long timeStamp = TimeUtil.getMillisecondByFormat(2017 + "-" + 10 + "-" + 20
+        long timeStamp = TimeUtil.getMillisecondByFormat(2018 + "-" + 9 + "-" + 3
                 , TimeUtil.FORMAT_DATE);
-        System.out.print(timeStamp);
+        String formatTimestamp = TimeUtil.formatTimestamp(timeStamp);
+        String formatTimestamp1 = TimeUtil.formatTimestamp(timeStamp);
+        System.out.print("timeStamp:" + timeStamp + " formatTimestamp:" + formatTimestamp + " formatTimestamp1:" + formatTimestamp1);
     }
 }

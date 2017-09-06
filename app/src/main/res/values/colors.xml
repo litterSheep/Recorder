@@ -9,6 +9,7 @@
     <color name="mainColorDisable">#881296db</color>
 
     <color name="gray">#f0f0f0</color>
+    <color name="gray1">#d0d0d0</color>
     <color name="mainColor1">#aa1296db</color>
     <color name="mainBg">#dd00B1ED</color>
     <color name="white">#FFFFFF</color>

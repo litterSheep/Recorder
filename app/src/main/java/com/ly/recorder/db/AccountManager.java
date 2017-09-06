@@ -36,7 +36,7 @@ public class AccountManager {
      * Created by ly on 2017/3/24 11:12
      */
     public List<Account> queryForRecentNum(int num) {
-        return accountDao.queryBuilder().limit(num).orderDesc(AccountDao.Properties.Time).build().list();
+        return accountDao.queryBuilder().limit(num).orderDesc(AccountDao.Properties.Id).build().list();
     }
 
     /**
