@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.ly.recorder.Constants;
 import com.ly.recorder.R;
 import com.ly.recorder.adapter.HistoryAdapter;
@@ -20,6 +21,7 @@ import com.ly.recorder.db.AccountManager;
 import com.ly.recorder.entity.SectionType;
 import com.ly.recorder.entity.Type;
 import com.ly.recorder.utils.ScreenUtil;
+import com.ly.recorder.utils.TimeUtil;
 import com.ly.recorder.utils.ToastUtil;
 import com.ly.recorder.utils.logger.Logger;
 import com.ly.recorder.view.CustomTitleBar;
@@ -37,7 +39,7 @@ import nl.dionsegijn.konfetti.models.Size;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText et_money, et_remark;
-    private TextView tv_save, tv_record_type, tv_history;
+    private TextView tv_save, tv_record_type, tv_history, tv_record_date;
     private ListView lv_history;
     private HistoryAdapter adapter;
     private List<Account> mlist;
@@ -47,6 +49,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private int typeIndex = Constants.TYPES_OUT.length - 1;//收入/支出对应的数组下标
 
     private KonfettiView konfettiView;
+    private DatePickerDialog datePickerDialog;
+    private int selectedYear, selectedMonth, selectedDay;//选择的年月日
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +79,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         tv_save = (TextView) findViewById(R.id.tv_commit);
         tv_history = (TextView) findViewById(R.id.tv_history_title);
         tv_record_type = (TextView) findViewById(R.id.tv_record_type);
+        tv_record_date = (TextView) findViewById(R.id.tv_record_date);
         tv_save.setOnClickListener(this);
         tv_record_type.setOnClickListener(this);
+        tv_record_date.setOnClickListener(this);
         lv_history.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -125,6 +131,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         showBoom();
     }
 
+    private void initDatePicker() {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        accountManager = new AccountManager();
+        int startYear = accountManager.queryMinYear();
+
+        datePickerDialog = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog datePickerDialog, int year,
+                                          int month, int day) {
+                        if (TimeUtil.isCurrentDay(year, month, day)) {
+                            tv_record_date.setText("今天");
+                        } else {
+                            tv_record_date.setText(year + "-" + month + "-" + day);
+                            selectedYear = year;
+                            selectedMonth = month + 1;//calendar中月份是从0开始，所以+1
+                            selectedDay = day;
+                        }
+                        tv_record_date.setTextColor(getResources().getColor(R.color.mainColor1));
+
+                    }
+                }
+                , currentYear
+                , currentMonth - 1//控件内部处理了，所以不做处理
+                , currentDay
+                , true);
+        if (startYear >= currentYear) {
+            startYear = currentYear - 1;
+        }
+        datePickerDialog.setYearRange(startYear, currentYear);
+        datePickerDialog.setCloseOnSingleTapDay(false);
+    }
+
     private void setAdapter() {
         accountManager = new AccountManager();
         mlist = accountManager.queryForRecentNum(200);
@@ -149,14 +193,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             int year = ca.get(Calendar.YEAR);
             int month = ca.get(Calendar.MONTH) + 1;
             int day = ca.get(Calendar.DATE);
+            long timeStamp = System.currentTimeMillis();
 
+            if (selectedYear != 0 && selectedMonth != 0 && selectedDay != 0) {
+                // TODO: 2017/9/6 在这里可以判断日期是否是选择的今天以后的日期
+                year = selectedYear;
+                money = selectedMonth;
+                day = selectedDay;
+                timeStamp = TimeUtil.getMillisecondByFormat(selectedDay + "-" + selectedMonth + "-" + selectedDay
+                        , TimeUtil.FORMAT_DATE);
+            }
             Account account = new Account();
             account.setMoney(money);
             account.setRemark(remark);
             account.setYear(year);
             account.setMonth(month);
             account.setDay(day);
-            account.setTime(System.currentTimeMillis());
+            account.setTime(timeStamp);
             account.setType(type);
             account.setTypeIndex(typeIndex);
 
@@ -176,9 +229,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 显示烟花动画
+     * Created by ly on 2017/9/6 23:31
+     */
     private void showBoom() {
         konfettiView.build()
-                .addColors(Color.parseColor("#FFF9D4CE"), Color.parseColor("#FFDAE7CE"), Color.parseColor("#FFDCDBEA"), Color.parseColor("#FFFFD96D"))
+                .addColors(Color.parseColor("#FFF9D4CE"), Color.parseColor("#FFDAE7CE"), Color.parseColor("#FFDCDBEA"), Color
+                        .parseColor("#FFFFD96D"))
                 .setDirection(0.0, 400.0)
                 .setSpeed(3f, 20f)
                 .setFadeOutEnabled(true)
@@ -203,6 +261,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 hideSoftKeyboard();
                 showTypePopup(v);
+                break;
+            case R.id.tv_record_date:
+                if (datePickerDialog == null)
+                    initDatePicker();
+                datePickerDialog.show(getSupportFragmentManager(), "datePicker");
                 break;
             default:
 

@@ -295,4 +295,10 @@ public class TimeUtil {
         int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
         return currentYear == year && currentMonth == month && currentDay == day;
     }
+
+    public static void main(String[] arg) {
+        long timeStamp = TimeUtil.getMillisecondByFormat(2017 + "-" + 10 + "-" + 20
+                , TimeUtil.FORMAT_DATE);
+        System.out.print(timeStamp);
+    }
 }

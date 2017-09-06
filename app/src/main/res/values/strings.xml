@@ -9,7 +9,7 @@
     <string name="jieyu">结余</string>
 
     <string name="record_num">金额</string>
-    <string name="record_type">选择类别</string>
+    <string name="record_type">类别</string>
     <string name="record_commit">入 账</string>
     <string name="record_remark">输入备注信息...</string>
     <string name="save_success">保存成功</string>
@@ -30,6 +30,7 @@
     <string name="day_history">-- 今日账单 --</string>
     <string name="no_day_history">-- 没有查询到对应的数据 --</string>
     <string name="no_history">-- 暂无历史入账 --</string>
+    <string name="main_date">日期</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

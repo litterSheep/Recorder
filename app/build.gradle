@@ -21,8 +21,8 @@ android {
 //        applicationId "com.ly.recorderMaster"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 25
-        versionName "2.5"
+        versionCode 26
+        versionName "2.6"
 
         ndk {
             // 设置支持的SO库架构

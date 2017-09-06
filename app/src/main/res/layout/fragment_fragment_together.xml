@@ -42,7 +42,7 @@
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pie_chart_month"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="320dp"
             android:layout_below="@+id/line_chart_month"
             android:visibility="gone"
             android:layout_marginTop="10dp"

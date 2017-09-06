@@ -28,6 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:text="@string/record_num"
                 android:textSize="16sp" />
@@ -36,6 +37,7 @@
                 android:id="@+id/et_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"
                 android:background="@color/transparent"
@@ -48,13 +50,24 @@
                 android:id="@+id/tv_record_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:drawablePadding="5dp"
                 android:drawableRight="@mipmap/xuanze"
                 android:padding="8dp"
                 android:text="@string/record_type"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_record_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/main_date"
+                android:singleLine="true"
+                android:padding="8dp"
+                android:drawableRight="@mipmap/xuanze"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <EditText
@@ -67,7 +80,7 @@
             android:hint="@string/record_remark"
             android:maxLines="3"
             android:minHeight="100dp"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textSize="16sp" />
 
         <TextView
